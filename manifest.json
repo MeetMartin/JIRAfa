@@ -21,6 +21,7 @@
   "web_accessible_resources": [
     "main.js",
     "modules/jira.js",
-    "modules/backlog-view.js"
+    "modules/utils.js",
+    "modules/backlog.js"
   ]
 }
