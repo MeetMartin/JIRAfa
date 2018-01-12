@@ -6,13 +6,7 @@ import {log, error} from './utils.js';
  * Returns boolean whether JIRA backlog view is currently available by checking GH objects
  * @returns {boolean}
  */
-const isBacklogAvailable = () => GH && GH.BacklogView && GH.BacklogController;
-
-/**
- * Returns boolean whether JIRA backlog view is currently available & visible on the screen
- * @returns {boolean}
- */
-const isBacklogVisible = () => isBacklogAvailable () && GH.BacklogController.visible;
+const isBacklogAvailable = () => GH && GH.BacklogView && GH.PlanController && GH.PlanDragAndDrop;
 
 /**
  * Adds a handler function to the event of JIRA Backlog being shown (issue data are not loaded yet)
@@ -33,7 +27,6 @@ const onBacklogShown = handler => {
         return false;
     }
 };
-
 /**
  * Adds a handler function to the event of JIRA Backlog being drawn (data loaded and issues displayed)
  * @param handler {function}
@@ -54,9 +47,29 @@ const onBacklogDrawn = handler => {
     }
 };
 
+/**
+ * Adds a handler function to the event of JIRA Backlog issues dragg and drop enabled
+ * @param handler {function}
+ * @returns {boolean}
+ */
+const onPlanDragAndDropEnabled = handler => {
+    if (isBacklogAvailable ()) {
+        const original = GH.PlanDragAndDrop.enableDragAndDrop;
+        GH.PlanDragAndDrop.enableDragAndDrop = () => {
+            original ();
+            handler ();
+        };
+        log (`Added handler for onPlanDragAndDropEnabled.`);
+        return true;
+    } else {
+        error ('Backlog is not available to add new handler to onPlanDragAndDropEnabled.');
+        return false;
+    }
+};
+
 export {
     isBacklogAvailable,
-    isBacklogVisible,
     onBacklogShown,
-    onBacklogDrawn
+    onBacklogDrawn,
+    onPlanDragAndDropEnabled
 };
