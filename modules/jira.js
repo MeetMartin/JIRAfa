@@ -9,67 +9,57 @@ import {log, error} from './utils.js';
 const isBacklogAvailable = () => GH && GH.BacklogView && GH.PlanController && GH.PlanDragAndDrop;
 
 /**
- * Adds a handler function to the event of JIRA Backlog being shown (issue data are not loaded yet)
- * @param handler {function}
- * @returns {boolean}
+ * Adds event emitter to backlog drawn triggering jirafa-backlog-drawn
  */
-const onBacklogShown = handler => {
-    if (isBacklogAvailable ()) {
-        const original = GH.PlanController.show;
-        GH.PlanController.show = () => {
-            original ();
-            handler ();
-        };
-        log (`Added handler for onBacklogShown.`);
-        return true;
-    } else {
-        error ('Backlog is not available to add new handler to onBacklogShown.');
-        return false;
-    }
-};
-/**
- * Adds a handler function to the event of JIRA Backlog being drawn (data loaded and issues displayed)
- * @param handler {function}
- * @returns {boolean}
- */
-const onBacklogDrawn = handler => {
-    if (isBacklogAvailable ()) {
-        const original = GH.BacklogView.draw;
-        GH.BacklogView.draw = () => {
-            original ();
-            handler ();
-        };
-        log (`Added handler for onBacklogDrawn.`);
-        return true;
-    } else {
-        error ('Backlog is not available to add new handler to onBacklogDrawn.');
-        return false;
-    }
+const addEvenEmitterToBacklogDrawn = () => {
+    const original = GH.BacklogView.draw;
+    GH.BacklogView.draw = () => {
+        original ();
+        $(document).trigger ('jirafa-backlog-drawn');
+    };
 };
 
 /**
- * Adds a handler function to the event of JIRA Backlog issues dragg and drop enabled
+ * Adds a handler function to the event of JIRA Backlog drawn (data loaded and issues displayed)
  * @param handler {function}
- * @returns {boolean}
+ * @returns {jQuery}
  */
-const onPlanDragAndDropEnabled = handler => {
+const onBacklogDrawn = handler => $(document).on ('jirafa-backlog-drawn', handler);
+
+/**
+ * Adds event emitter to backlog updated jirafa-backlog-updated
+ */
+const addEvenEmitterToBacklogUpdated = () => {
+    const original = GH.PlanDragAndDrop.enableDragAndDrop;
+    GH.PlanDragAndDrop.enableDragAndDrop = () => {
+        original ();
+        $(document).trigger ('jirafa-backlog-updated');
+    };
+};
+
+/**
+ * Adds a handler function to the event of JIRA Backlog updated (data loaded and issues displayed)
+ * @param handler {function}
+ * @returns {jQuery}
+ */
+const onBacklogUpdated = handler => $(document).on ('jirafa-backlog-updated', handler);
+
+/**
+ * Adds all JIRAfa event emitters to GH object methods
+ */
+const addJIRAfaEventEmitters = () => {
     if (isBacklogAvailable ()) {
-        const original = GH.PlanDragAndDrop.enableDragAndDrop;
-        GH.PlanDragAndDrop.enableDragAndDrop = () => {
-            original ();
-            handler ();
-        };
-        log (`Added handler for onPlanDragAndDropEnabled.`);
-        return true;
+        addEvenEmitterToBacklogDrawn ();
+        addEvenEmitterToBacklogUpdated();
+        log ('Event Emitters added.');
     } else {
-        error ('Backlog is not available to add new handler to onPlanDragAndDropEnabled.');
-        return false;
+        error ('Backlog is not available to add emitters.');
     }
 };
 
 export {
     isBacklogAvailable,
-    onBacklogShown,
+    addJIRAfaEventEmitters,
     onBacklogDrawn,
-    onPlanDragAndDropEnabled
+    onBacklogUpdated
 };

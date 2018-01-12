@@ -1,7 +1,7 @@
 'use strict';
 
 import {log} from './utils.js';
-import {onPlanDragAndDropEnabled} from './jira.js';
+import {onBacklogDrawn, onBacklogUpdated} from './jira.js';
 
 /**
  * Returns the end element of a single backlog issue
@@ -67,7 +67,8 @@ const compactBacklogIssues = async () => {
  * Makes backlog issues always compact
  */
 const makeBacklogIssueAlwaysCompact = () => {
-    onPlanDragAndDropEnabled (compactBacklogIssues);
+    onBacklogDrawn (compactBacklogIssues);
+    onBacklogUpdated (compactBacklogIssues);
     log ('Backlog issues will always be compact.');
 };
 
