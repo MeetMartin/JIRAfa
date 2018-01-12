@@ -15,7 +15,7 @@ const findTheEndOfIssue = issue => $(issue).find ('span.ghx-end');
  * @param issue {Element}
  * @returns {jQuery}
  */
-const compactAndMoveExtraFieldsContent = (issue) =>
+const compactAndMoveExtraFieldsContent = issue =>
     $(issue).find ('span.ghx-extra-field-content')
         .addClass ('aui-label')
         .parent ().removeClass ('ghx-extra-field')
@@ -26,14 +26,14 @@ const compactAndMoveExtraFieldsContent = (issue) =>
  * @param issue {Element}
  * @returns {jQuery}
  */
-const moveEpicAndVersion = (issue) =>  $(issue).find ("div.ghx-end span.aui-label").prependTo (findTheEndOfIssue (issue));
+const moveEpicAndVersion = issue =>  $(issue).find ("div.ghx-end span.aui-label").prependTo (findTheEndOfIssue (issue));
 
 /**
  * Finds extra fields, appends them to a target element and compacts the issue
  * @param issue {Element}
  * @returns {jQuery}
  */
-const moveExtraFieldsAndCompactIssue = (issue) => {
+const moveExtraFieldsAndCompactIssue = issue => {
     const extraFields = $(issue).find ('.ghx-plan-extra-fields');
     extraFields.parent ().append (findTheEndOfIssue (issue));
     extraFields.remove ();
@@ -53,7 +53,7 @@ const removeExtraItemsWithNoneValue = () => $('span.ghx-extra-field-content:cont
  */
 const compactBacklogIssues = async () => {
     removeExtraItemsWithNoneValue ();
-    const backlogIssue = $('.ghx-backlog  .js-issue:not(.JIRAfaCompacted)');
+    const backlogIssue = $('.ghx-backlog .js-issue:not(.JIRAfaCompacted)');
     backlogIssue.each ((index, issue) => {
         compactAndMoveExtraFieldsContent (issue);
         moveEpicAndVersion (issue);
