@@ -21,8 +21,9 @@ const on = event => handler => $(document).on (event, handler);
 const addEvenEmitterToBacklogDrawn = () => {
     const original = GH.BacklogView.draw;
     GH.BacklogView.draw = () => {
-        original ();
+        const result = original ();
         $(document).trigger ('jirafa-backlog-drawn');
+        return result;
     };
 };
 
@@ -39,10 +40,21 @@ const onBacklogDrawn = on ('jirafa-backlog-drawn');
 const addEvenEmitterToBacklogUpdated = () => {
     const original = GH.PlanDragAndDrop.enableDragAndDrop;
     GH.PlanDragAndDrop.enableDragAndDrop = () => {
-        original ();
+        const result = original ();
         $(document).trigger ('jirafa-backlog-updated');
+        return result;
     };
 };
+
+const addEvenEmitterToActiveSprintsUpdated = () => {
+    const original = GH.WorkController.setPoolData;
+    GH.WorkController.setPoolData = data => {
+        const result = original (data);
+        $(document).trigger ('jirafa-active-sprints-updated');
+        return result;
+    };
+};
+const onActiveSprintsUpdated = on ('jirafa-active-sprints-updated');
 
 /**
  * Adds a handler function to the event of JIRA Backlog updated (data loaded and issues displayed)
@@ -57,7 +69,8 @@ const onBacklogUpdated = on ('jirafa-backlog-updated');
 const addJIRAfaEventEmitters = () => {
     if (isBacklogAvailable ()) {
         addEvenEmitterToBacklogDrawn ();
-        addEvenEmitterToBacklogUpdated();
+        addEvenEmitterToBacklogUpdated ();
+        addEvenEmitterToActiveSprintsUpdated ();
         log ('Event Emitters added.');
     } else {
         error ('Backlog is not available to add emitters.');
@@ -68,5 +81,6 @@ export {
     isBacklogAvailable,
     addJIRAfaEventEmitters,
     onBacklogDrawn,
-    onBacklogUpdated
+    onBacklogUpdated,
+    onActiveSprintsUpdated
 };

@@ -1,7 +1,7 @@
 'use strict';
 
 import {log} from './logger.js';
-import {onBacklogDrawn, onBacklogUpdated} from './jira-event-manager.js';
+import {onBacklogDrawn, onBacklogUpdated, onActiveSprintsUpdated} from './jira-event-manager.js';
 
 /**
  * Returns the end element of a single backlog issue
@@ -26,7 +26,7 @@ const compactAndMoveExtraFieldsContent = issue =>
  * @param issue {Element}
  * @returns {jQuery}
  */
-const moveEpicAndVersion = issue =>  $(issue).find ("div.ghx-end span.aui-label").prependTo (findTheEndOfIssue (issue));
+const moveEpicAndVersion = issue => $(issue).find ("div.ghx-end span.aui-label").prependTo (findTheEndOfIssue (issue));
 
 /**
  * Finds extra fields, appends them to a target element and compacts the issue
@@ -51,7 +51,7 @@ const removeExtraItemsWithNoneValue = () => $('span.ghx-extra-field-content:cont
  */
 const compactBacklogIssues = async () => {
     removeExtraItemsWithNoneValue ();
-    const backlogIssue = $('.ghx-backlog .js-issue:not(.JIRAfaCompacted)');
+    const backlogIssue = $('.js-issue:not(.JIRAfaCompacted)');
     backlogIssue.each ((index, issue) => {
         compactAndMoveExtraFieldsContent (issue);
         moveEpicAndVersion (issue);
@@ -67,6 +67,7 @@ const compactBacklogIssues = async () => {
 const makeBacklogIssuesAlwaysCompact = () => {
     onBacklogDrawn (compactBacklogIssues);
     onBacklogUpdated (compactBacklogIssues);
+    //onActiveSprintsUpdated (compactBacklogIssues);
     log ('Backlog issues will always be compact.');
 };
 
