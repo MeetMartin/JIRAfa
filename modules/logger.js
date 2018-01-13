@@ -11,16 +11,12 @@ const getLogLevel = () => logLevel;
 /**
  * Sets log level by a number or a name: 0 = none, 1 = error, 2 = log.
  * @param level {number|string}
- * @returns {boolean}
+ * @returns {number}
  */
-const setLogLevel = level => {
-  const options = [0, 1, 2, 'none', 'error', 'log'];
-  const index = options.indexOf (level);
-  if (index === -1) return false;
-  if (index < 3) logLevel = index;
-  else logLevel = index -3;
-  return true;
-};
+const setLogLevel = level =>
+    (index => index === -1 ? logLevel : logLevel = index % 3)
+    ([0, 1, 2, 'none', 'error', 'log'].indexOf (level));
+// Immediately Invoked Function Expression
 
 /**
  * Outputs to console depending on log level.
@@ -29,26 +25,23 @@ const setLogLevel = level => {
  * @param style {string}
  * @returns {boolean}
  */
-const out = (func, message, style = 'color: #86d8f7') => {
-    if ((logLevel === 1 && func === console.error) || logLevel === 2) {
-        func ('%cJIRAfa: ' + message, style);
-        return true;
-    }
-};
+const out = (func, message, style) =>
+    (logLevel === 1 && func === console.error) || logLevel === 2 ?
+        func ('%cJIRAfa: ' + message, style) : null;
 
 /**
  * Outputs console.log depending on log level.
  * @param message {string}
  * @returns {boolean}
  */
-const log = message => out (console.log, message);
+const log = message => out (console.log, message, 'color: #86d8f7');
 
 /**
  * Outputs console.error depending on log level.
  * @param message {string}
  * @returns {boolean}
  */
-const error = message => out (console.error, message, 'color: red');
+const error = message => out (console.error, message, 'color: #f00');
 
 export {
     getLogLevel,

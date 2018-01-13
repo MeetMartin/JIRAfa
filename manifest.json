@@ -20,8 +20,8 @@
   ],
   "web_accessible_resources": [
     "main.js",
-    "modules/jira.js",
-    "modules/utils.js",
+    "modules/jira-event-manager.js",
+    "modules/logger.js",
     "modules/backlog-compacter.js"
   ]
 }
