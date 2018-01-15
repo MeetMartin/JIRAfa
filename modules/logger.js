@@ -16,7 +16,6 @@ const getLogLevel = () => logLevel;
 const setLogLevel = level =>
     (index => index === -1 ? logLevel : logLevel = index % 3)
     ([0, 1, 2, 'none', 'error', 'log'].indexOf (level));
-// Immediately Invoked Function Expression
 
 /**
  * Outputs to console depending on log level.
