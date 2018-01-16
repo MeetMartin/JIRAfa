@@ -22,6 +22,8 @@
     "main.js",
     "modules/jira-event-manager.js",
     "modules/logger.js",
-    "modules/backlog-compacter.js"
+    "modules/backlog-compacter.js",
+    "modules/button-banner.js",
+    "modules/jump-to-sprint.js"
   ]
 }

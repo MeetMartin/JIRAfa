@@ -1,10 +1,23 @@
 import {log, error} from './logger.js';
 
 /**
- * Returns boolean whether JIRA backlog view is currently available by checking GH objects
- * @returns {boolean} true if JIRA backlog view is available
+ * Backlog | Active Sprints | Reports | Unknown
+ * @type {string}
  */
-const isBacklogAvailable = () => GH && GH.BacklogView && GH.PlanController && GH.PlanDragAndDrop;
+let activeAgileView = 'Unknown';
+
+/**
+ * Gets active Agile view (null if unavailable)
+ * @returns {string} Backlog | Active Sprints | Reports | Unknown
+ */
+const getActiveAgileView = () => activeAgileView;
+
+/**
+ * Returns boolean whether JIRA GH object is currently available
+ * @returns {boolean} true if JIRA GH object is available
+ */
+const isGHAvailable = () => GH && GH.BacklogView && GH.PlanController && GH.PlanDragAndDrop && GH.WorkController;
+
 
 /**
  * Curry to trigger handler on event
@@ -12,6 +25,69 @@ const isBacklogAvailable = () => GH && GH.BacklogView && GH.PlanController && GH
  * @returns {function(function=): (JQuery)} curried function to add event handler
  */
 const on = event => handler => $ (document).on (event, handler);
+
+/**
+ * Sets active Agile view based on current url
+ * @returns {null} nothing to return
+ */
+const setActiveAgileViewBasedOnUrl = () => {
+    const url = String (window.location);
+    if (url.includes ('rapidView')) {
+        if (url.includes ('view=planning')) {
+            activeAgileView = 'Backlog';
+        } else if (url.includes ('view=reporting')) {
+            activeAgileView = 'Reports';
+        } else {
+            activeAgileView = 'Active Sprints';
+        }
+    } else {
+        activeAgileView = 'Unknown';
+    }
+};
+
+/**
+ * Adds event emitter to JIRA on active Agile view chagge triggering jirafa-active-agile-view-changed
+ * @return {null} nothing to return
+ */
+const addEvenEmitterToActiveAgileViewChanged = () => {
+    setActiveAgileViewBasedOnUrl ();
+    window.onpopstate = () => {
+        const originalState = getActiveAgileView ();
+        setActiveAgileViewBasedOnUrl ();
+        const newState = getActiveAgileView ();
+        if (originalState !== newState) {
+            log (`Active Agile view is ${newState}.`);
+            $ (document).trigger ('jirafa-active-agile-view-changed');
+        }
+    };
+};
+
+/**
+ * Adds a handler function to the event of JIRA active Agile view change
+ * @param {function} handler function to handle the event
+ * @returns {JQuery} JQuery 'on' function
+ */
+const onActiveAgileViewChanged = on ('jirafa-active-agile-view-changed');
+
+/**
+ * Adds event emitter to JIRA Backlog shown triggering jirafa-backlog-shown
+ * @return {null} nothing to return
+ */
+const addEvenEmitterToBacklogShown = () => {
+    const original = GH.PlanController.show;
+    GH.PlanController.show = () => {
+        const result = original ();
+        $ (document).trigger ('jirafa-backlog-shown');
+        return result;
+    };
+};
+
+/**
+ * Adds a handler function to the event of JIRA Backlog shown (data not loaded and issues not displayed)
+ * @param {function} handler function to handle the event
+ * @returns {JQuery} JQuery 'on' function
+ */
+const onBacklogShown = on ('jirafa-backlog-shown');
 
 /**
  * Adds event emitter to JIRA Backlog drawn triggering jirafa-backlog-drawn
@@ -79,7 +155,9 @@ const onActiveSprintsUpdated = on ('jirafa-active-sprints-updated');
  * @returns {null} nothing to return
  */
 const addJIRAfaEventEmitters = () => {
-    if (isBacklogAvailable ()) {
+    if (isGHAvailable ()) {
+        addEvenEmitterToActiveAgileViewChanged ();
+        addEvenEmitterToBacklogShown ();
         addEvenEmitterToBacklogDrawn ();
         addEvenEmitterToBacklogUpdated ();
         addEvenEmitterToActiveSprintsUpdated ();
@@ -90,8 +168,11 @@ const addJIRAfaEventEmitters = () => {
 };
 
 export {
-    isBacklogAvailable,
+    isGHAvailable,
+    getActiveAgileView,
     addJIRAfaEventEmitters,
+    onActiveAgileViewChanged,
+    onBacklogShown,
     onBacklogDrawn,
     onBacklogUpdated,
     onActiveSprintsUpdated
