@@ -13,7 +13,7 @@ let activeAgileView = 'Unknown';
 const getActiveAgileView = () => activeAgileView;
 
 /**
- * Returns boolean whether JIRA GH object is currently available
+ * Returns boolean whether JIRA GrassHopper object is currently available
  * @returns {boolean} true if JIRA GH object is available
  */
 const isGHAvailable = () => GH && GH.BacklogView && GH.PlanController && GH.PlanDragAndDrop && GH.WorkController;
@@ -46,7 +46,7 @@ const setActiveAgileViewBasedOnUrl = () => {
 };
 
 /**
- * Adds event emitter to JIRA on active Agile view chagge triggering jirafa-active-agile-view-changed
+ * Adds event emitter to JIRA on active Agile view change triggering jirafa-active-agile-view-changed
  * @return {null} nothing to return
  */
 const addEvenEmitterToActiveAgileViewChanged = () => {

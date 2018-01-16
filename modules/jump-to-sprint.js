@@ -3,7 +3,7 @@
  * @returns {JQuery} jump to sprint button
  */
 const createJumpToSprintButton = () => {
-    return $ ('<dd><a role="button" href="#">Hello World!</a></dd>');
+    return $ ('<a role="button" href="#">Sprints</a>');
 };
 
 export {
