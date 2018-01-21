@@ -53,24 +53,25 @@ const updateButtonsBasedOnAgileView = () => {
     log ('Button displays updated.');
 };
 
-/**
- * Adds button to the button banners
- * @param {array<string>} views Backlog | Active Sprints | Reports
- * @param {function} button the button to be added
- * @returns {JQuery} button banner
- */
-const addButton = (views, button) => {
-    const classes = views.reduce (viewIntoClass, '').substr (1); // Serves to hide and show buttons based on active view
-    const finalButton = $ (`<dd class="${classes}"></dd>`)
-        .append (button ());
-    buttonBanner.find ('.ghx-controls-filters').append (finalButton);
-};
 
 /**
  * Attaches button banner to JIRA DOM into #ghx-controls for all Agile views
  * @returns {JQuery} button banner
  */
 const attachButtonBannerToJIRA = () => buttonBanner.prependTo ('#ghx-controls');
+
+/**
+ * Adds button to the button banners
+ * @param {array<string>} views Backlog | Active Sprints | Reports
+ * @param {function} createButton the button to be added
+ * @returns {JQuery} button banner
+ */
+const addButton = (views, createButton) => {
+    const finalButton = createButton ();
+    const classes = views.reduce (viewIntoClass, '').substr (1); // Serves to hide and show buttons based on active view
+    finalButton.attr ('class', finalButton.attr ('class') + ' ' + classes);
+    buttonBanner.find ('.ghx-controls-filters').append (finalButton);
+};
 
 /**
  * Adds button banner to JIRA

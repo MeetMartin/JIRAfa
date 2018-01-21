@@ -23,6 +23,7 @@
     "modules/jira-event-manager.js",
     "modules/logger.js",
     "modules/backlog-compacter.js",
+    "modules/button.js",
     "modules/button-banner.js",
     "modules/jump-to-sprint.js"
   ]
