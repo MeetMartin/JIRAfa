@@ -66,15 +66,14 @@ const hideMenu = () => {
 
 /**
  * Displays or hides dropdown menu
- * @param {event} event triggering event
+ * @param {JQuery.Event} event triggering event
  * @param {array<array<string,function>>} menuOptions options for dropdown menu
  * @returns {null} nothing to return
  */
 const toggleMenu = (event, menuOptions) => {
     event.stopPropagation ();
-    if ($ (event.target).hasClass ('ghx-active')) {
-        hideMenu ();
-    } else {
+    hideMenu ();
+    if (!$ (event.target).hasClass ('ghx-active')) {
         $ (event.target).addClass ('ghx-active');
         const menu = createMenu (); // Menu is created every time to make sure it shows current data
         menuOptions.forEach (option => menu.addOption (option[0], option[1]));

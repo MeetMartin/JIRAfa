@@ -1,6 +1,7 @@
 import {log, error} from "./logger.js";
 import {onActiveAgileViewChanged, getActiveAgileView} from './jira-event-manager.js';
-import {createJumpToSprintButton} from './jump-to-sprint.js';
+import {createSprintsButton} from './sprints-button.js';
+import {createEpicsButton} from "./epics-button.js";
 
 /**
  * JQuery object of button banner based on JIRA styles
@@ -78,7 +79,8 @@ const addButton = (views, createButton) => {
  * @returns {null} nothing to return
  */
 const addButtonBanner = () => {
-    addButton (['Backlog'], createJumpToSprintButton);
+    addButton (['Backlog'], createSprintsButton);
+    addButton (['Backlog'], createEpicsButton);
     attachButtonBannerToJIRA ();
     updateButtonsBasedOnAgileView ();
     onActiveAgileViewChanged (updateButtonsBasedOnAgileView);

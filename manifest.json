@@ -4,6 +4,7 @@
   "version": "0.9",
   "manifest_version": 2,
   "permissions": [
+    "storage"
   ],
   "content_scripts": [
     {
@@ -25,6 +26,7 @@
     "modules/backlog-compacter.js",
     "modules/button.js",
     "modules/button-banner.js",
-    "modules/jump-to-sprint.js"
+    "modules/sprints-button.js",
+    "modules/epics-button.js"
   ]
 }

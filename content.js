@@ -23,4 +23,21 @@ const injectMain = () => {
  */
 const isJIRA = () => $ ('meta[name="application-name"]').attr ('content') === 'JIRA';
 
-if (isJIRA ()) injectMain (); // Find all the fun stuff in main.js which is injected as <script type="module">
+if (isJIRA ()) {
+    // Making possible communication between modules and extension content script
+    window.addEventListener ('message', event => {
+        if (event.source !== window) return;
+        if (event.data.type) {
+            console.log (`%cJIRAfa: Message request received in content script, type: ${event.data.type}.`,
+                'color: #86d8f7');
+            switch (event.data.type) {
+                case 'JIRAfa-request-storage':
+                    // window.postMessage ({ type: 'JIRAfa-response-storage', content: {something:"baf"} }, '*');
+                    break;
+                default:
+                    console.error ('%cJIRAfa: Unknown message request type.', 'color: #f00');
+            }
+        }
+    });
+    injectMain (); // Find all the fun stuff in main.js which is injected as <script type="module">
+}
