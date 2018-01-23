@@ -21,7 +21,7 @@ const setLogLevel = level =>
 /**
  * Outputs to console depending on log level.
  * @param {function} func console.log or console.error
- * @returns {null} nothing to return
+ * @returns {function(function(function=)): (*)} returns curried function resulting in original message
  */
 const out = func => style => message => {
     if ((logLevel === 1 && func === console.error) || logLevel === 2) {
@@ -33,14 +33,14 @@ const out = func => style => message => {
 /**
  * Outputs console.log depending on log level.
  * @param {*} message to be printed to console
- * @returns {*} nothing to return
+ * @returns {*} original message
  */
 const log = out (console.log) ('color: #86d8f7');
 
 /**
  * Outputs console.error depending on log level.
  * @param {*} message to be printed to console
- * @returns {*} nothing to return
+ * @returns {*} original message
  */
 const error = out (console.error) ('color: #f00');
 
