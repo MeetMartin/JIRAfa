@@ -1,6 +1,6 @@
 import assert from 'assert';
 
-import {getLogLevel, setLogLevel, log, error} from '../modules/logger.js';
+import {getLogLevel, setLogLevel, log, error} from '../extension/modules/logger.js';
 
 const fnc = () => true;
 const obj = { hello: 'can you hear me?' };
