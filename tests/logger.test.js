@@ -15,6 +15,7 @@ describe ('Logger', () => {
     describe ('setLogLevel ()', () => {
         it ('should return the level passed as a number', () => {
             assert.deepStrictEqual (setLogLevel (2), 2);
+            assert.deepStrictEqual (setLogLevel (1), 1);
             assert.deepStrictEqual (setLogLevel (0), 0);
             assert.deepStrictEqual (setLogLevel ('log'), 2);
             assert.deepStrictEqual (setLogLevel ('error'), 1);
@@ -23,6 +24,7 @@ describe ('Logger', () => {
         it ('should return the current level if invalid argument is passed', () => {
             assert.deepStrictEqual (setLogLevel ('nonesence'), 0);
             assert.deepStrictEqual (setLogLevel (3), 0);
+            assert.deepStrictEqual (setLogLevel (), 0);
         });
     });
 
@@ -30,6 +32,7 @@ describe ('Logger', () => {
         it ('should return any variable passed to it', () => {
             assert.deepStrictEqual (log ('whatever'), 'whatever');
             assert.deepStrictEqual (log (null), null);
+            assert.deepStrictEqual (log (), undefined);
             assert.deepStrictEqual (log (fnc), fnc);
             assert.deepStrictEqual (log (obj), obj);
         });
@@ -39,6 +42,7 @@ describe ('Logger', () => {
         it ('should return any variable passed to it', () => {
             assert.deepStrictEqual (error ('whatever'), 'whatever');
             assert.deepStrictEqual (error (null), null);
+            assert.deepStrictEqual (error (), undefined);
             assert.deepStrictEqual (error (fnc), fnc);
             assert.deepStrictEqual (error (obj), obj);
         });
