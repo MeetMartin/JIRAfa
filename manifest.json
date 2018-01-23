@@ -27,6 +27,7 @@
     "modules/button.js",
     "modules/button-banner.js",
     "modules/sprints-button.js",
-    "modules/epics-button.js"
+    "modules/epics-button.js",
+    "modules/favorite-epic.js"
   ]
 }
