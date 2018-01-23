@@ -48,7 +48,9 @@
   //  // https://eslint.org/docs/user-guide/configuring#specifying-globals
   "globals": {
     "chrome": true,
-    "GH": true
+    "GH": true,
+    "describe": true,
+    "it": true
   },
   //
   //  // https://eslint.org/docs/user-guide/configuring#configuring-plugins

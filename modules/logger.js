@@ -21,27 +21,28 @@ const setLogLevel = level =>
 /**
  * Outputs to console depending on log level.
  * @param {function} func console.log or console.error
- * @param {string} message to be printed to console
- * @param {string} style styling
  * @returns {null} nothing to return
  */
-const out = (func, message, style) =>
-    (logLevel === 1 && func === console.error) || logLevel === 2 ?
-        func ('%cJIRAfa: ' + message, style) : null;
+const out = func => style => message => {
+    if ((logLevel === 1 && func === console.error) || logLevel === 2) {
+        func ('%cJIRAfa: ' + message, style);
+    }
+    return message;
+};
 
 /**
  * Outputs console.log depending on log level.
- * @param {string} message to be printed to console
- * @returns {null} nothing to return
+ * @param {*} message to be printed to console
+ * @returns {*} nothing to return
  */
-const log = message => out (console.log, message, 'color: #86d8f7');
+const log = out (console.log) ('color: #86d8f7');
 
 /**
  * Outputs console.error depending on log level.
- * @param {string} message to be printed to console
- * @returns {null} nothing to return
+ * @param {*} message to be printed to console
+ * @returns {*} nothing to return
  */
-const error = message => out (console.error, message, 'color: #f00');
+const error = out (console.error) ('color: #f00');
 
 export {
     getLogLevel,
