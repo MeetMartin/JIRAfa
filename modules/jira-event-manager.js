@@ -27,22 +27,21 @@ const isGHAvailable = () => GH && GH.BacklogView && GH.PlanController && GH.Plan
 const on = event => handler => $ (document).on (event, handler);
 
 /**
+ * Checks whether a string can be found in url
+ * @param {string} str to be found in url
+ * @returns {boolean} whether url includes a string
+ */
+const urlIncludes = str => String (window.location).includes (str);
+
+/**
  * Sets active Agile view based on current url
- * @returns {null} nothing to return
+ * @returns {string} active view
  */
 const setActiveAgileViewBasedOnUrl = () => {
-    const url = String (window.location);
-    if (url.includes ('rapidView')) {
-        if (url.includes ('view=planning')) {
-            activeAgileView = 'Backlog';
-        } else if (url.includes ('view=reporting')) {
-            activeAgileView = 'Reports';
-        } else {
-            activeAgileView = 'Active Sprints';
-        }
-    } else {
-        activeAgileView = 'Unknown';
-    }
+    if (!urlIncludes ('rapidView')) return activeAgileView = 'Unknown';
+    if (urlIncludes ('view=planning')) return activeAgileView = 'Backlog';
+    if (urlIncludes ('view=reporting')) return activeAgileView = 'Reports';
+    return activeAgileView = 'Active Sprints';
 };
 
 /**
