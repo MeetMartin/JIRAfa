@@ -51,6 +51,8 @@
     "GH": true,
     "describe": true,
     "it": true,
+    "beforeEach": true,
+    "done": true,
     "global": true
   },
   //

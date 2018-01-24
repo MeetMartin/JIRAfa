@@ -3,7 +3,7 @@
  *
  * Chrome supports ES6 modules since version 61, however Chrome extensions don't support it directly. This is
  * a workaround to provide full modules support by injecting scripts directly into page DOM through main.js.
- * More on https://stackoverflow.com/questions/48104433/how-to-import-es6-modules-in-content-script-for-chrome-extension
+ * More on https://medium.com/@martinnovk_22870/using-javascript-es6-import-export-modules-in-chrome-extensions-f63a3a0d2736
  *
  * @returns {null} nothing is returned
  */

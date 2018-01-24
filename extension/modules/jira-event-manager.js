@@ -1,16 +1,16 @@
 import {log, error} from './logger.js';
 
 /**
- * Backlog | Active Sprints | Reports | Unknown
+ * Backlog | Active Sprints | Reports | Open Issue | Unknown
  * @type {string}
  */
-let activeAgileView = 'Unknown';
+let activeView = 'Unknown';
 
 /**
- * Gets active Agile view (null if unavailable)
- * @returns {string} Backlog | Active Sprints | Reports | Unknown
+ * Gets active view (null if unavailable)
+ * @returns {string} Backlog | Active Sprints | Reports | Open Issue | Unknown
  */
-const getActiveAgileView = () => activeAgileView;
+const getActiveView = () => activeView;
 
 /**
  * Returns boolean whether JIRA GrassHopper object is currently available
@@ -43,14 +43,16 @@ const trigger = event => document.dispatchEvent (new Event (event));
 const urlIncludes = str => String (window.location).includes (str);
 
 /**
- * Sets active Agile view based on current url
+ * Sets active view based on current url
  * @returns {string} active view
  */
-const setActiveAgileViewBasedOnUrl = () => {
-    if (!urlIncludes ('rapidView')) return activeAgileView = 'Unknown';
-    if (urlIncludes ('view=planning')) return activeAgileView = 'Backlog';
-    if (urlIncludes ('view=reporting')) return activeAgileView = 'Reports';
-    return activeAgileView = 'Active Sprints';
+const setActiveViewBasedOnUrl = () => {
+    if (urlIncludes ('rapidView')) {
+        if (urlIncludes ('view=planning')) return activeView = 'Backlog';
+        if (urlIncludes ('view=reporting')) return activeView = 'Reports';
+        return activeView = 'Active Sprints';
+    } else if (urlIncludes ('browse')) return activeView = 'Open Issue';
+    return activeView = 'Unknown';
 };
 
 /**
@@ -71,28 +73,28 @@ const addEventEmitterToOnPopState = () => {
 const onPopState = on ('jirafa-onpopstate');
 
 /**
- * Adds event emitter to JIRA on active Agile view change triggering jirafa-active-agile-view-changed
+ * Adds event emitter to JIRA on active view change triggering jirafa-active-view-changed
  * @return {null} nothing to return
  */
-const addEvenEmitterToActiveAgileViewChanged = () => {
-    setActiveAgileViewBasedOnUrl ();
+const addEvenEmitterToActiveViewChanged = () => {
+    setActiveViewBasedOnUrl ();
     onPopState (() => {
-        const originalState = getActiveAgileView ();
-        setActiveAgileViewBasedOnUrl ();
-        const newState = getActiveAgileView ();
+        const originalState = getActiveView ();
+        setActiveViewBasedOnUrl ();
+        const newState = getActiveView ();
         if (originalState !== newState) {
             log (`Active Agile view is ${newState}.`);
-            trigger ('jirafa-active-agile-view-changed');
+            trigger ('jirafa-active-view-changed');
         }
     });
 };
 
 /**
- * Adds a handler function to the event of JIRA active Agile view change
+ * Adds a handler function to the event of JIRA active view change
  * @param {function} handler function to handle the event
  * @returns {string} name of the event
  */
-const onActiveAgileViewChanged = on ('jirafa-active-agile-view-changed');
+const onActiveViewChanged = on ('jirafa-active-view-changed');
 
 /**
  * Adds event emitter to JIRA Backlog shown triggering jirafa-backlog-shown
@@ -182,7 +184,7 @@ const onActiveSprintsUpdated = on ('jirafa-active-sprints-updated');
 const addJIRAfaEventEmitters = () => {
     if (isGHAvailable ()) {
         addEventEmitterToOnPopState ();
-        addEvenEmitterToActiveAgileViewChanged ();
+        addEvenEmitterToActiveViewChanged ();
         addEvenEmitterToBacklogShown ();
         addEvenEmitterToBacklogDrawn ();
         addEvenEmitterToBacklogUpdated ();
@@ -197,8 +199,8 @@ export {
     isGHAvailable,
     addJIRAfaEventEmitters,
     onPopState,
-    onActiveAgileViewChanged,
-    getActiveAgileView,
+    onActiveViewChanged,
+    getActiveView,
     onBacklogShown,
     onBacklogDrawn,
     onBacklogUpdated,

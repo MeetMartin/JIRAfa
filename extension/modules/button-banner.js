@@ -1,5 +1,5 @@
 import {log, error} from "./logger.js";
-import {onActiveAgileViewChanged, getActiveAgileView} from './jira-event-manager.js';
+import {onActiveViewChanged, getActiveView} from './jira-event-manager.js';
 import {createSprintsButton} from './sprints-button.js';
 import {createEpicsButton} from "./epics-button.js";
 
@@ -38,7 +38,7 @@ const viewIntoClass = (result, view) => {
  */
 const updateButtonsBasedOnAgileView = () => {
     $ ('.jirafa-display-backlog, .jirafa-display-active-sprints, .jirafa-display-reports').hide ();
-    switch (getActiveAgileView ()) {
+    switch (getActiveView ()) {
         case 'Backlog':
             $ ('.jirafa-display-backlog').show ();
             break;
@@ -83,7 +83,7 @@ const addButtonBanner = () => {
     addButton (['Backlog'], createEpicsButton);
     attachButtonBannerToJIRA ();
     updateButtonsBasedOnAgileView ();
-    onActiveAgileViewChanged (updateButtonsBasedOnAgileView);
+    onActiveViewChanged (updateButtonsBasedOnAgileView);
     log ('JIRAfa button banner added.');
 };
 
