@@ -50,7 +50,8 @@
     "chrome": true,
     "GH": true,
     "describe": true,
-    "it": true
+    "it": true,
+    "global": true
   },
   //
   //  // https://eslint.org/docs/user-guide/configuring#configuring-plugins

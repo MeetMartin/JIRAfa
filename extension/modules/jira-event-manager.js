@@ -16,15 +16,24 @@ const getActiveAgileView = () => activeAgileView;
  * Returns boolean whether JIRA GrassHopper object is currently available
  * @returns {boolean} true if JIRA GH object is available
  */
-const isGHAvailable = () => GH && GH.BacklogView && GH.PlanController && GH.PlanDragAndDrop && GH.WorkController;
-
+const isGHAvailable = () => typeof GH !== 'undefined';
 
 /**
  * Curry to trigger handler on event
  * @param {string} event event name
- * @returns {function(function=): (JQuery)} curried function to add event handler
+ * @returns {function(function=): (string)} curried function to add event handler
  */
-const on = event => handler => $ (document).on (event, handler);
+const on = event => handler => {
+    document.addEventListener (event, handler);
+    return event;
+};
+
+/**
+ * Triggers (dispatches) an event
+ * @param {string} event name of the event
+ * @returns {boolean} always true
+ */
+const trigger = event => document.dispatchEvent (new Event (event));
 
 /**
  * Checks whether a string can be found in url
@@ -45,26 +54,43 @@ const setActiveAgileViewBasedOnUrl = () => {
 };
 
 /**
+ * Adds event emitter to popstate
+ * @returns {string} aname of the event
+ */
+const addEventEmitterToOnPopState = () => {
+    const event = 'jirafa-onpopstate';
+    window.onpopstate = () => trigger (event);
+    return event;
+};
+
+/**
+ * Adds a handler function to the event popstate
+ * @param {function} handler function to handle the event
+ * @returns {string} name of the event
+ */
+const onPopState = on ('jirafa-onpopstate');
+
+/**
  * Adds event emitter to JIRA on active Agile view change triggering jirafa-active-agile-view-changed
  * @return {null} nothing to return
  */
 const addEvenEmitterToActiveAgileViewChanged = () => {
     setActiveAgileViewBasedOnUrl ();
-    window.onpopstate = () => {
+    onPopState (() => {
         const originalState = getActiveAgileView ();
         setActiveAgileViewBasedOnUrl ();
         const newState = getActiveAgileView ();
         if (originalState !== newState) {
             log (`Active Agile view is ${newState}.`);
-            $ (document).trigger ('jirafa-active-agile-view-changed');
+            trigger ('jirafa-active-agile-view-changed');
         }
-    };
+    });
 };
 
 /**
  * Adds a handler function to the event of JIRA active Agile view change
  * @param {function} handler function to handle the event
- * @returns {JQuery} JQuery 'on' function
+ * @returns {string} name of the event
  */
 const onActiveAgileViewChanged = on ('jirafa-active-agile-view-changed');
 
@@ -76,7 +102,7 @@ const addEvenEmitterToBacklogShown = () => {
     const original = GH.PlanController.show;
     GH.PlanController.show = () => {
         const result = original ();
-        $ (document).trigger ('jirafa-backlog-shown');
+        trigger ('jirafa-backlog-shown');
         return result;
     };
 };
@@ -84,7 +110,7 @@ const addEvenEmitterToBacklogShown = () => {
 /**
  * Adds a handler function to the event of JIRA Backlog shown (data not loaded and issues not displayed)
  * @param {function} handler function to handle the event
- * @returns {JQuery} JQuery 'on' function
+ * @returns {string} name of the event
  */
 const onBacklogShown = on ('jirafa-backlog-shown');
 
@@ -96,7 +122,7 @@ const addEvenEmitterToBacklogDrawn = () => {
     const original = GH.BacklogView.draw;
     GH.BacklogView.draw = () => {
         const result = original ();
-        $ (document).trigger ('jirafa-backlog-drawn');
+        trigger ('jirafa-backlog-drawn');
         return result;
     };
 };
@@ -104,7 +130,7 @@ const addEvenEmitterToBacklogDrawn = () => {
 /**
  * Adds a handler function to the event of JIRA Backlog drawn (data loaded and issues displayed)
  * @param {function} handler function to handle the event
- * @returns {JQuery} JQuery 'on' function
+ * @returns {string} name of the event
  */
 const onBacklogDrawn = on ('jirafa-backlog-drawn');
 
@@ -116,7 +142,7 @@ const addEvenEmitterToBacklogUpdated = () => {
     const original = GH.PlanDragAndDrop.enableDragAndDrop;
     GH.PlanDragAndDrop.enableDragAndDrop = () => {
         const result = original ();
-        $ (document).trigger ('jirafa-backlog-updated');
+        trigger ('jirafa-backlog-updated');
         return result;
     };
 };
@@ -125,7 +151,7 @@ const addEvenEmitterToBacklogUpdated = () => {
 /**
  * Adds a handler function to the event of JIRA Backlog updated (data loaded and issues displayed)
  * @param {function} handler function to handle the event
- * @returns {JQuery} JQuery 'on' function
+ * @returns {string} name of the event
  */
 const onBacklogUpdated = on ('jirafa-backlog-updated');
 
@@ -137,7 +163,7 @@ const addEvenEmitterToActiveSprintsUpdated = () => {
     const original = GH.WorkController.setPoolData;
     GH.WorkController.setPoolData = data => {
         const result = original (data);
-        $ (document).trigger ('jirafa-active-sprints-updated');
+        trigger ('jirafa-active-sprints-updated');
         return result;
     };
 };
@@ -145,7 +171,7 @@ const addEvenEmitterToActiveSprintsUpdated = () => {
 /**
  * Adds a handler function to the event of JIRA Active Sprints updated (data loaded and issues displayed)
  * @param {function} handler function to handle the event
- * @returns {JQuery} JQuery 'on' function
+ * @returns {string} name of the event
  */
 const onActiveSprintsUpdated = on ('jirafa-active-sprints-updated');
 
@@ -155,6 +181,7 @@ const onActiveSprintsUpdated = on ('jirafa-active-sprints-updated');
  */
 const addJIRAfaEventEmitters = () => {
     if (isGHAvailable ()) {
+        addEventEmitterToOnPopState ();
         addEvenEmitterToActiveAgileViewChanged ();
         addEvenEmitterToBacklogShown ();
         addEvenEmitterToBacklogDrawn ();
@@ -168,9 +195,10 @@ const addJIRAfaEventEmitters = () => {
 
 export {
     isGHAvailable,
-    getActiveAgileView,
     addJIRAfaEventEmitters,
+    onPopState,
     onActiveAgileViewChanged,
+    getActiveAgileView,
     onBacklogShown,
     onBacklogDrawn,
     onBacklogUpdated,
