@@ -26,6 +26,15 @@ describe ('Jira Event Manager', () => {
     });
 
     describe ('addJIRAfaEventEmitters', () => {
+        it ('returns false if GH object is not available', () => {
+            delete global.GH;
+            assert.deepStrictEqual (addJIRAfaEventEmitters (), false);
+        });
+
+        it ('returns true if GH object is available', () => {
+            assert.deepStrictEqual (addJIRAfaEventEmitters (), true);
+        });
+
         it ('emitters should be activated', () => {
             addJIRAfaEventEmitters ();
             const onpopstate = global.document.eventListeners.get ('jirafa-onpopstate');

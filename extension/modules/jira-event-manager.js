@@ -179,7 +179,7 @@ const onActiveSprintsUpdated = on ('jirafa-active-sprints-updated');
 
 /**
  * Adds all JIRAfa event emitters to GH object methods
- * @returns {null} nothing to return
+ * @returns {boolean} true if GH is available and emitters are added
  */
 const addJIRAfaEventEmitters = () => {
     if (isGHAvailable ()) {
@@ -190,8 +190,10 @@ const addJIRAfaEventEmitters = () => {
         addEvenEmitterToBacklogUpdated ();
         addEvenEmitterToActiveSprintsUpdated ();
         log ('Event Emitters added.');
+        return true;
     } else {
         error ('Backlog is not available to add emitters.');
+        return false;
     }
 };
 
