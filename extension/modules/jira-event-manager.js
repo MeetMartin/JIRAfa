@@ -191,10 +191,9 @@ const addJIRAfaEventEmitters = () => {
         addEvenEmitterToActiveSprintsUpdated ();
         log ('Event Emitters added.');
         return true;
-    } else {
-        error ('Backlog is not available to add emitters.');
-        return false;
     }
+    error ('Backlog is not available to add emitters.');
+    return false;
 };
 
 export {
