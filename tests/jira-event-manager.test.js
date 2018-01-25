@@ -1,11 +1,14 @@
 import assert from 'assert';
+import proxy from 'proxyquire';
 
 import {getGH} from './mocks/grass-hopper.mock.js';
 import {getDocument} from './mocks/document.mock.js';
 import {getWindow} from './mocks/window.mock.js';
 
-import {isGHAvailable, addJIRAfaEventEmitters, onPopState, onBacklogShown, onBacklogDrawn, onBacklogUpdated,
-    onActiveSprintsUpdated, onActiveViewChanged,getActiveView} from '../extension/modules/jira-event-manager.js';
+import logger from './mocks/modules/logger.mock.js';
+
+proxy.noCallThru ();
+const Test = proxy ('../extension/modules/jira-event-manager.js', { './logger.js': logger });
 
 beforeEach (() => {
     global.GH = getGH ();
@@ -14,29 +17,36 @@ beforeEach (() => {
     global.Event = global.window.Event;
 });
 
+afterEach (() => {
+    delete global.GH;
+    delete global.document;
+    delete global.window;
+    delete global.Event;
+});
+
 describe ('Jira Event Manager', () => {
     describe ('isGHAvailable', () => {
         it ('should be false if GrassHopper objects are missing', () => {
             delete global.GH;
-            assert.deepStrictEqual (isGHAvailable (), false);
+            assert.deepStrictEqual (Test.isGHAvailable (), false);
         });
         it ('should be true if GrassHopper objects are present', () => {
-            assert.deepStrictEqual (isGHAvailable (), true);
+            assert.deepStrictEqual (Test.isGHAvailable (), true);
         });
     });
 
     describe ('addJIRAfaEventEmitters', () => {
         it ('returns false if GH object is not available', () => {
             delete global.GH;
-            assert.deepStrictEqual (addJIRAfaEventEmitters (), false);
+            assert.deepStrictEqual (Test.addJIRAfaEventEmitters (), false);
         });
 
         it ('returns true if GH object is available', () => {
-            assert.deepStrictEqual (addJIRAfaEventEmitters (), true);
+            assert.deepStrictEqual (Test.addJIRAfaEventEmitters (), true);
         });
 
         it ('emitters should be activated', () => {
-            addJIRAfaEventEmitters ();
+            Test.addJIRAfaEventEmitters ();
             const onpopstate = global.document.eventListeners.get ('jirafa-onpopstate');
             assert.deepStrictEqual (onpopstate.length, 1);
             assert.deepStrictEqual (typeof onpopstate [0], 'function');
@@ -49,48 +59,48 @@ describe ('Jira Event Manager', () => {
 
     describe ('onPopState', () => {
         it ('should call its handler with pop state event', done => {
-            addJIRAfaEventEmitters ();
-            onPopState (done);
+            Test.addJIRAfaEventEmitters ();
+            Test.onPopState (done);
             global.window.onpopstate ();
         });
     });
 
     describe ('onBacklogShown', () => {
         it ('should call its handler when GH.PlanController.show is called', done => {
-            addJIRAfaEventEmitters ();
-            onBacklogShown (done);
+            Test.addJIRAfaEventEmitters ();
+            Test.onBacklogShown (done);
             global.GH.PlanController.show ();
         });
     });
 
     describe ('onBacklogDrawn', () => {
         it ('should call its handler when GH.BacklogView.draw is called', done => {
-            addJIRAfaEventEmitters ();
-            onBacklogDrawn (done);
+            Test.addJIRAfaEventEmitters ();
+            Test.onBacklogDrawn (done);
             global.GH.BacklogView.draw ();
         });
     });
 
     describe ('onBacklogUpdated', () => {
         it ('should call its handler when GH.PlanDragAndDrop.enableDragAndDrop is called', done => {
-            addJIRAfaEventEmitters ();
-            onBacklogUpdated (done);
+            Test.addJIRAfaEventEmitters ();
+            Test.onBacklogUpdated (done);
             global.GH.PlanDragAndDrop.enableDragAndDrop ();
         });
     });
 
     describe ('onActiveSprintsUpdated', () => {
         it ('should call its handler when GH.WorkController.setPoolData is called', done => {
-            addJIRAfaEventEmitters ();
-            onActiveSprintsUpdated (done);
+            Test.addJIRAfaEventEmitters ();
+            Test.onActiveSprintsUpdated (done);
             GH.WorkController.setPoolData ();
         });
     });
 
     describe ('onActiveViewChanged', () => {
         it ('should call its handler with pop state event as page url changes', done => {
-            addJIRAfaEventEmitters ();
-            onActiveViewChanged (done);
+            Test.addJIRAfaEventEmitters ();
+            Test.onActiveViewChanged (done);
             global.window.location = 'https://domain.tld/secure/RapidBoard.jspa?rapidView=1234&view=planning.nodetail';
             global.window.onpopstate ();
         });
@@ -98,12 +108,12 @@ describe ('Jira Event Manager', () => {
 
     describe ('getActiveView', () => {
         it ('should return Unknown by default and on unrecognized urls', done => {
-            addJIRAfaEventEmitters ();
-            assert.deepStrictEqual (getActiveView (), 'Unknown');
+            Test.addJIRAfaEventEmitters ();
+            assert.deepStrictEqual (Test.getActiveView (), 'Unknown');
             global.window.location = 'https://domain.tld/secure/RapidBoard.jspa?rapidView=1234&view=planning.nodetail';
             global.window.onpopstate ();
-            onActiveViewChanged (() => {
-                assert.deepStrictEqual (getActiveView (), 'Unknown');
+            Test.onActiveViewChanged (() => {
+                assert.deepStrictEqual (Test.getActiveView (), 'Unknown');
                 done ();
             });
             global.window.location = 'https://domain.tld/nonsense';
@@ -111,9 +121,9 @@ describe ('Jira Event Manager', () => {
         });
 
         it ('should return Backlog if url contains "rapidView" and "view=planning"', done => {
-            addJIRAfaEventEmitters ();
-            onActiveViewChanged (() => {
-                assert.deepStrictEqual (getActiveView (), 'Backlog');
+            Test.addJIRAfaEventEmitters ();
+            Test.onActiveViewChanged (() => {
+                assert.deepStrictEqual (Test.getActiveView (), 'Backlog');
                 done ();
             });
             global.window.location = 'https://domain.tld/secure/RapidBoard.jspa?rapidView=1234&view=planning.nodetail';
@@ -121,9 +131,9 @@ describe ('Jira Event Manager', () => {
         });
 
         it ('should return Reports if url contains "rapidView" and "view=reporting"', done => {
-            addJIRAfaEventEmitters ();
-            onActiveViewChanged (() => {
-                assert.deepStrictEqual (getActiveView (), 'Reports');
+            Test.addJIRAfaEventEmitters ();
+            Test.onActiveViewChanged (() => {
+                assert.deepStrictEqual (Test.getActiveView (), 'Reports');
                 done ();
             });
             global.window.location = 'https://domain.tld/secure/RapidBoard.jspa?rapidView=1234&view=reporting';
@@ -131,9 +141,9 @@ describe ('Jira Event Manager', () => {
         });
 
         it ('should return Active Sprints if url contains "rapidView" but not "view=reporting" or "view=planning"', done => {
-            addJIRAfaEventEmitters ();
-            onActiveViewChanged (() => {
-                assert.deepStrictEqual (getActiveView (), 'Active Sprints');
+            Test.addJIRAfaEventEmitters ();
+            Test.onActiveViewChanged (() => {
+                assert.deepStrictEqual (Test.getActiveView (), 'Active Sprints');
                 done ();
             });
             global.window.location = 'https://domain.tld/secure/RapidBoard.jspa?rapidView=1234';
@@ -141,9 +151,9 @@ describe ('Jira Event Manager', () => {
         });
 
         it ('should return Open Issue if url contains "browse" but not "rapidView"', done => {
-            addJIRAfaEventEmitters ();
-            onActiveViewChanged (() => {
-                assert.deepStrictEqual (getActiveView (), 'Open Issue');
+            Test.addJIRAfaEventEmitters ();
+            Test.onActiveViewChanged (() => {
+                assert.deepStrictEqual (Test.getActiveView (), 'Open Issue');
                 done ();
             });
             global.window.location = 'https://domain.tld/browse/JIRAFA-1';

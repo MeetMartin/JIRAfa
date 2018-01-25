@@ -52,6 +52,7 @@
     "describe": true,
     "it": true,
     "beforeEach": true,
+    "afterEach": true,
     "done": true,
     "global": true
   },
