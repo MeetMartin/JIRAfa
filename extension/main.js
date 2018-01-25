@@ -8,7 +8,7 @@ setLogLevel ('log');
 
 addJIRAfaEventEmitters ();
 
-onActiveViewChanged (() => log ('Active Agile view changed.'));
+onActiveViewChanged (() => log ('Active view changed.'));
 onBacklogShown (() => log ('Backlog is shown.'));
 onBacklogDrawn (() => log ('Backlog is drawn.'));
 onBacklogUpdated (() => log ('Backlog updated.'));
