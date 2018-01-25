@@ -38,7 +38,7 @@ const viewIntoClass = (result, view) => {
  */
 const updateButtonsBasedOnAgileView = () => {
     $ ('.jirafa-display-backlog, .jirafa-display-active-sprints, .jirafa-display-reports').hide ();
-    switch (getActiveView ()) {
+    switch (getActiveView (String (window.location))) {
         case 'Backlog':
             $ ('.jirafa-display-backlog').show ();
             break;

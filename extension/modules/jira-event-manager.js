@@ -1,72 +1,52 @@
 import {log, error} from './logger.js';
 
 /**
- * Backlog | Active Sprints | Reports | Open Issue | Unknown
- * @type {string}
- */
-let activeView = 'Unknown';
-
-/**
- * Gets active view (null if unavailable)
- * @returns {string} Backlog | Active Sprints | Reports | Open Issue | Unknown
- */
-const getActiveView = () => activeView;
-
-/**
  * Returns boolean whether JIRA GrassHopper object is currently available
+ * @impure
  * @returns {boolean} true if JIRA GH object is available
  */
 const isGHAvailable = () => typeof GH !== 'undefined';
 
 /**
  * Curry to trigger handler on event
+ * @impure
  * @param {string} event event name
  * @returns {function(function=): (string)} curried function to add event handler
  */
-const on = event => handler => {
-    document.addEventListener (event, handler);
-    return event;
-};
+const on = event => handler => document.addEventListener (event, handler) || event;
 
 /**
  * Triggers (dispatches) an event
+ * @impure
  * @param {string} event name of the event
  * @returns {boolean} always true
  */
 const trigger = event => document.dispatchEvent (new Event (event));
 
 /**
- * Checks whether a string can be found in url
- * @param {string} str to be found in url
- * @returns {boolean} whether url includes a string
- */
-const urlIncludes = str => String (window.location).includes (str);
-
-/**
  * Sets active view based on current url
+ * @pure
+ * @param {string} url url to be checked
  * @returns {string} active view
  */
-const setActiveViewBasedOnUrl = () => {
-    if (urlIncludes ('rapidView')) {
-        if (urlIncludes ('view=planning')) return activeView = 'Backlog';
-        if (urlIncludes ('view=reporting')) return activeView = 'Reports';
-        return activeView = 'Active Sprints';
-    } else if (urlIncludes ('browse')) return activeView = 'Open Issue';
-    return activeView = 'Unknown';
-};
+const getActiveView = url =>
+    url.includes ('rapidView') ?
+        url.includes ('view=planning') ? 'Backlog' :
+        url.includes ('view=reporting') ? 'Reports' :
+        'Active Sprints' :
+    url.includes ('browse') ? 'Open Issue' : 'Unknown';
 
 /**
  * Adds event emitter to popstate
- * @returns {string} aname of the event
+ * @impure
+ * @returns {string} a name of the event
  */
-const addEventEmitterToOnPopState = () => {
-    const event = 'jirafa-onpopstate';
-    window.onpopstate = () => trigger (event);
-    return event;
-};
+const addEventEmitterToOnPopState =
+    (event => () => window.onpopstate = () => trigger (event) || event) ('jirafa-onpopstate');
 
 /**
  * Adds a handler function to the event popstate
+ * @impure
  * @param {function} handler function to handle the event
  * @returns {string} name of the event
  */
@@ -74,15 +54,15 @@ const onPopState = on ('jirafa-onpopstate');
 
 /**
  * Adds event emitter to JIRA on active view change triggering jirafa-active-view-changed
+ * @impure
  * @return {null} nothing to return
  */
 const addEvenEmitterToActiveViewChanged = () => {
-    setActiveViewBasedOnUrl ();
+    let activeView = getActiveView (String (window.location));
     onPopState (() => {
-        const originalState = getActiveView ();
-        setActiveViewBasedOnUrl ();
-        const newState = getActiveView ();
-        if (originalState !== newState) {
+        const newState = getActiveView (String (window.location));
+        if (activeView !== newState) {
+            activeView = newState;
             log (`Active Agile view is ${newState}.`);
             trigger ('jirafa-active-view-changed');
         }
@@ -91,6 +71,7 @@ const addEvenEmitterToActiveViewChanged = () => {
 
 /**
  * Adds a handler function to the event of JIRA active view change
+ * @impure
  * @param {function} handler function to handle the event
  * @returns {string} name of the event
  */
@@ -98,6 +79,7 @@ const onActiveViewChanged = on ('jirafa-active-view-changed');
 
 /**
  * Adds event emitter to JIRA Backlog shown triggering jirafa-backlog-shown
+ * @impure
  * @return {null} nothing to return
  */
 const addEvenEmitterToBacklogShown = () => {
@@ -111,6 +93,7 @@ const addEvenEmitterToBacklogShown = () => {
 
 /**
  * Adds a handler function to the event of JIRA Backlog shown (data not loaded and issues not displayed)
+ * @impure
  * @param {function} handler function to handle the event
  * @returns {string} name of the event
  */
@@ -118,6 +101,7 @@ const onBacklogShown = on ('jirafa-backlog-shown');
 
 /**
  * Adds event emitter to JIRA Backlog drawn triggering jirafa-backlog-drawn
+ * @impure
  * @return {null} nothing to return
  */
 const addEvenEmitterToBacklogDrawn = () => {
@@ -131,6 +115,7 @@ const addEvenEmitterToBacklogDrawn = () => {
 
 /**
  * Adds a handler function to the event of JIRA Backlog drawn (data loaded and issues displayed)
+ * @impure
  * @param {function} handler function to handle the event
  * @returns {string} name of the event
  */
@@ -138,6 +123,7 @@ const onBacklogDrawn = on ('jirafa-backlog-drawn');
 
 /**
  * Adds event emitter to JIRA Backlog updated jirafa-backlog-updated
+ * @impure
  * @returns {null} nothing to return
  */
 const addEvenEmitterToBacklogUpdated = () => {
@@ -152,6 +138,7 @@ const addEvenEmitterToBacklogUpdated = () => {
 
 /**
  * Adds a handler function to the event of JIRA Backlog updated (data loaded and issues displayed)
+ * @impure
  * @param {function} handler function to handle the event
  * @returns {string} name of the event
  */
@@ -159,6 +146,7 @@ const onBacklogUpdated = on ('jirafa-backlog-updated');
 
 /**
  * Adds event emitter to JIRA Active Sprints updated jirafa-active-sprints-updated
+ * @impure
  * @return {null} nothing to return
  */
 const addEvenEmitterToActiveSprintsUpdated = () => {
@@ -172,6 +160,7 @@ const addEvenEmitterToActiveSprintsUpdated = () => {
 
 /**
  * Adds a handler function to the event of JIRA Active Sprints updated (data loaded and issues displayed)
+ * @impure
  * @param {function} handler function to handle the event
  * @returns {string} name of the event
  */
@@ -179,6 +168,7 @@ const onActiveSprintsUpdated = on ('jirafa-active-sprints-updated');
 
 /**
  * Adds all JIRAfa event emitters to GH object methods
+ * @impure
  * @returns {boolean} true if GH is available and emitters are added
  */
 const addJIRAfaEventEmitters = () => {
@@ -192,7 +182,7 @@ const addJIRAfaEventEmitters = () => {
         log ('Event Emitters added.');
         return true;
     }
-    error ('Backlog is not available to add emitters.');
+    error ('GH is not available to add emitters.');
     return false;
 };
 

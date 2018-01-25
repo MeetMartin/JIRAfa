@@ -107,57 +107,29 @@ describe ('Jira Event Manager', () => {
     });
 
     describe ('getActiveView', () => {
-        it ('should return Unknown by default and on unrecognized urls', done => {
-            Test.addJIRAfaEventEmitters ();
-            assert.deepStrictEqual (Test.getActiveView (), 'Unknown');
-            global.window.location = 'https://domain.tld/secure/RapidBoard.jspa?rapidView=1234&view=planning.nodetail';
-            global.window.onpopstate ();
-            Test.onActiveViewChanged (() => {
-                assert.deepStrictEqual (Test.getActiveView (), 'Unknown');
-                done ();
-            });
-            global.window.location = 'https://domain.tld/nonsense';
-            global.window.onpopstate ();
+        it ('should return Unknown on unrecognized urls', () => {
+            assert.deepStrictEqual (Test.getActiveView ('https://domain.tld/nonsense'), 'Unknown');
         });
 
-        it ('should return Backlog if url contains "rapidView" and "view=planning"', done => {
-            Test.addJIRAfaEventEmitters ();
-            Test.onActiveViewChanged (() => {
-                assert.deepStrictEqual (Test.getActiveView (), 'Backlog');
-                done ();
-            });
-            global.window.location = 'https://domain.tld/secure/RapidBoard.jspa?rapidView=1234&view=planning.nodetail';
-            global.window.onpopstate ();
+        it ('should return Backlog if url contains "rapidView" and "view=planning"', () => {
+            assert.deepStrictEqual (
+                Test.getActiveView ('https://domain.tld/secure/RapidBoard.jspa?rapidView=1234&view=planning.nodetail'),
+                'Backlog');
         });
 
-        it ('should return Reports if url contains "rapidView" and "view=reporting"', done => {
-            Test.addJIRAfaEventEmitters ();
-            Test.onActiveViewChanged (() => {
-                assert.deepStrictEqual (Test.getActiveView (), 'Reports');
-                done ();
-            });
-            global.window.location = 'https://domain.tld/secure/RapidBoard.jspa?rapidView=1234&view=reporting';
-            global.window.onpopstate ();
+        it ('should return Reports if url contains "rapidView" and "view=reporting"', () => {
+            assert.deepStrictEqual (
+                Test.getActiveView ('https://domain.tld/secure/RapidBoard.jspa?rapidView=1234&view=reporting'),
+                'Reports');
         });
 
-        it ('should return Active Sprints if url contains "rapidView" but not "view=reporting" or "view=planning"', done => {
-            Test.addJIRAfaEventEmitters ();
-            Test.onActiveViewChanged (() => {
-                assert.deepStrictEqual (Test.getActiveView (), 'Active Sprints');
-                done ();
-            });
-            global.window.location = 'https://domain.tld/secure/RapidBoard.jspa?rapidView=1234';
-            global.window.onpopstate ();
+        it ('should return Active Sprints if url contains "rapidView" but not "view=reporting" or "view=planning"', () => {
+            assert.deepStrictEqual (Test.getActiveView ('https://domain.tld/secure/RapidBoard.jspa?rapidView=1234'),
+                'Active Sprints');
         });
 
-        it ('should return Open Issue if url contains "browse" but not "rapidView"', done => {
-            Test.addJIRAfaEventEmitters ();
-            Test.onActiveViewChanged (() => {
-                assert.deepStrictEqual (Test.getActiveView (), 'Open Issue');
-                done ();
-            });
-            global.window.location = 'https://domain.tld/browse/JIRAFA-1';
-            global.window.onpopstate ();
+        it ('should return Open Issue if url contains "browse" but not "rapidView"', () => {
+            assert.deepStrictEqual (Test.getActiveView ('https://domain.tld/browse/JIRAFA-1'), 'Open Issue');
         });
     });
 });
