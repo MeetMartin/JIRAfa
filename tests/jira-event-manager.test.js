@@ -36,13 +36,25 @@ describe ('Jira Event Manager', () => {
     });
 
     describe ('addJIRAfaEventEmitters', () => {
-        it ('returns false if GH object is not available', () => {
+        it ('returns array with only one emitter name if GH object is not available', () => {
             delete global.GH;
-            assert.deepStrictEqual (Test.addJIRAfaEventEmitters (), false);
+            assert.deepStrictEqual (Test.addJIRAfaEventEmitters ().length, 2);
+            assert.deepStrictEqual (Test.addJIRAfaEventEmitters (), [
+                'jirafa-onpopstate',
+                'jirafa-active-view-changed'
+            ]);
         });
 
-        it ('returns true if GH object is available', () => {
-            assert.deepStrictEqual (Test.addJIRAfaEventEmitters (), true);
+        it ('returns array with 6 emitter names if GH object is available', () => {
+            assert.deepStrictEqual (Test.addJIRAfaEventEmitters ().length, 6);
+            assert.deepStrictEqual (Test.addJIRAfaEventEmitters (), [
+                'jirafa-onpopstate',
+                'jirafa-active-view-changed',
+                'jirafa-backlog-shown',
+                'jirafa-backlog-drawn',
+                'jirafa-backlog-updated',
+                'jirafa-active-sprints-updated'
+            ]);
         });
 
         it ('emitters should be activated', () => {

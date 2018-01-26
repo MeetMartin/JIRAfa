@@ -1,15 +1,13 @@
-import {log, error} from './logger.js';
-
 /**
  * Returns boolean whether JIRA GrassHopper object is currently available
- * @impure
+ * @impure depends on global GH object
  * @returns {boolean} true if JIRA GH object is available
  */
 const isGHAvailable = () => typeof GH !== 'undefined';
 
 /**
  * Curry to trigger handler on event
- * @impure
+ * @impure calls document.addEventListener
  * @param {string} event event name
  * @returns {function(function=): (string)} curried function to add event handler
  */
@@ -17,7 +15,7 @@ const on = event => handler => document.addEventListener (event, handler) || eve
 
 /**
  * Triggers (dispatches) an event
- * @impure
+ * @impure calls document.dispatchEvent
  * @param {string} event name of the event
  * @returns {boolean} always true
  */
@@ -38,15 +36,15 @@ const getActiveView = url =>
 
 /**
  * Adds event emitter to popstate
- * @impure
+ * @impure edits window.onpopstate and calls impure function trigger
  * @returns {string} a name of the event
  */
 const addEventEmitterToOnPopState =
-    (event => () => window.onpopstate = () => trigger (event) || event) ('jirafa-onpopstate');
+    (event => () => (window.onpopstate = () => trigger (event)) && event) ('jirafa-onpopstate');
 
 /**
  * Adds a handler function to the event popstate
- * @impure
+ * @impure calls impure function on
  * @param {function} handler function to handle the event
  * @returns {string} name of the event
  */
@@ -54,24 +52,25 @@ const onPopState = on ('jirafa-onpopstate');
 
 /**
  * Adds event emitter to JIRA on active view change triggering jirafa-active-view-changed
- * @impure
- * @return {null} nothing to return
+ * @impure deeply impure
+ * @return {string} 'jirafa-active-view-changed'
  */
 const addEvenEmitterToActiveViewChanged = () => {
     let activeView = getActiveView (String (window.location));
+    const event = 'jirafa-active-view-changed';
     onPopState (() => {
         const newState = getActiveView (String (window.location));
         if (activeView !== newState) {
             activeView = newState;
-            log (`Active Agile view is ${newState}.`);
-            trigger ('jirafa-active-view-changed');
+            trigger (event);
         }
     });
+    return event;
 };
 
 /**
  * Adds a handler function to the event of JIRA active view change
- * @impure
+ * @impure calls impure function on
  * @param {function} handler function to handle the event
  * @returns {string} name of the event
  */
@@ -80,20 +79,22 @@ const onActiveViewChanged = on ('jirafa-active-view-changed');
 /**
  * Adds event emitter to JIRA Backlog shown triggering jirafa-backlog-shown
  * @impure
- * @return {null} nothing to return
+ * @return {string} 'jirafa-backlog-shown'
  */
 const addEvenEmitterToBacklogShown = () => {
+    const event = 'jirafa-backlog-shown';
     const original = GH.PlanController.show;
     GH.PlanController.show = () => {
         const result = original ();
-        trigger ('jirafa-backlog-shown');
+        trigger (event);
         return result;
     };
+    return event;
 };
 
 /**
  * Adds a handler function to the event of JIRA Backlog shown (data not loaded and issues not displayed)
- * @impure
+ * @impure calls impure function on
  * @param {function} handler function to handle the event
  * @returns {string} name of the event
  */
@@ -101,21 +102,23 @@ const onBacklogShown = on ('jirafa-backlog-shown');
 
 /**
  * Adds event emitter to JIRA Backlog drawn triggering jirafa-backlog-drawn
- * @impure
- * @return {null} nothing to return
+ * @impure deeply impure
+ * @return {string} 'jirafa-backlog-drawn'
  */
 const addEvenEmitterToBacklogDrawn = () => {
+    const event = 'jirafa-backlog-drawn';
     const original = GH.BacklogView.draw;
     GH.BacklogView.draw = () => {
         const result = original ();
-        trigger ('jirafa-backlog-drawn');
+        trigger (event);
         return result;
     };
+    return event;
 };
 
 /**
  * Adds a handler function to the event of JIRA Backlog drawn (data loaded and issues displayed)
- * @impure
+ * @impure calls impure function on
  * @param {function} handler function to handle the event
  * @returns {string} name of the event
  */
@@ -123,22 +126,24 @@ const onBacklogDrawn = on ('jirafa-backlog-drawn');
 
 /**
  * Adds event emitter to JIRA Backlog updated jirafa-backlog-updated
- * @impure
- * @returns {null} nothing to return
+ * @impure deeply impure
+ * @returns {string} 'jirafa-backlog-updated'
  */
 const addEvenEmitterToBacklogUpdated = () => {
+    const event = 'jirafa-backlog-updated';
     const original = GH.PlanDragAndDrop.enableDragAndDrop;
     GH.PlanDragAndDrop.enableDragAndDrop = () => {
         const result = original ();
-        trigger ('jirafa-backlog-updated');
+        trigger (event);
         return result;
     };
+    return event;
 };
 
 
 /**
  * Adds a handler function to the event of JIRA Backlog updated (data loaded and issues displayed)
- * @impure
+ * @impure calls impure function on
  * @param {function} handler function to handle the event
  * @returns {string} name of the event
  */
@@ -146,21 +151,23 @@ const onBacklogUpdated = on ('jirafa-backlog-updated');
 
 /**
  * Adds event emitter to JIRA Active Sprints updated jirafa-active-sprints-updated
- * @impure
- * @return {null} nothing to return
+ * @impure deeply impure
+ * @return {string} 'jirafa-active-sprints-updated'
  */
 const addEvenEmitterToActiveSprintsUpdated = () => {
+    const event = 'jirafa-active-sprints-updated';
     const original = GH.WorkController.setPoolData;
     GH.WorkController.setPoolData = data => {
         const result = original (data);
-        trigger ('jirafa-active-sprints-updated');
+        trigger (event);
         return result;
     };
+    return event;
 };
 
 /**
  * Adds a handler function to the event of JIRA Active Sprints updated (data loaded and issues displayed)
- * @impure
+ * @impure calls impure function on
  * @param {function} handler function to handle the event
  * @returns {string} name of the event
  */
@@ -168,22 +175,22 @@ const onActiveSprintsUpdated = on ('jirafa-active-sprints-updated');
 
 /**
  * Adds all JIRAfa event emitters to GH object methods
- * @impure
- * @returns {boolean} true if GH is available and emitters are added
+ * @impure deeply impure
+ * @returns {array} list of event names with emitters
  */
 const addJIRAfaEventEmitters = () => {
-    if (isGHAvailable ()) {
-        addEventEmitterToOnPopState ();
-        addEvenEmitterToActiveViewChanged ();
-        addEvenEmitterToBacklogShown ();
-        addEvenEmitterToBacklogDrawn ();
-        addEvenEmitterToBacklogUpdated ();
-        addEvenEmitterToActiveSprintsUpdated ();
-        log ('Event Emitters added.');
-        return true;
-    }
-    error ('GH is not available to add emitters.');
-    return false;
+    const alwaysAddedEventEmitters = [
+            addEventEmitterToOnPopState (),
+            addEvenEmitterToActiveViewChanged ()
+        ];
+    const agileEventEmitters = !isGHAvailable () ? [] :
+        [
+            addEvenEmitterToBacklogShown (),
+            addEvenEmitterToBacklogDrawn (),
+            addEvenEmitterToBacklogUpdated (),
+            addEvenEmitterToActiveSprintsUpdated ()
+        ];
+    return [].concat (alwaysAddedEventEmitters, agileEventEmitters);
 };
 
 export {
