@@ -8,10 +8,10 @@ const isGHAvailable = () => typeof GH !== 'undefined';
 /**
  * Curry to trigger handler on event
  * @impure calls document.addEventListener
- * @param {string} event event name
+ * @param {function} handler function to handle the event
  * @returns {function(function=): (string)} curried function to add event handler
  */
-const on = event => handler => document.addEventListener (event, handler) || event;
+const on = handler => event => document.addEventListener (event, handler) || event;
 
 /**
  * Triggers (dispatches) an event
@@ -48,7 +48,7 @@ const addEventEmitterToOnPopState =
  * @param {function} handler function to handle the event
  * @returns {string} name of the event
  */
-const onPopState = on ('jirafa-onpopstate');
+const onPopState = handler => on (handler) ('jirafa-onpopstate');
 
 /**
  * Adds event emitter to JIRA on active view change triggering jirafa-active-view-changed
@@ -74,7 +74,7 @@ const addEvenEmitterToActiveViewChanged = () => {
  * @param {function} handler function to handle the event
  * @returns {string} name of the event
  */
-const onActiveViewChanged = on ('jirafa-active-view-changed');
+const onActiveViewChanged = handler => on (handler) ('jirafa-active-view-changed');
 
 /**
  * Adds event emitter to JIRA Backlog shown triggering jirafa-backlog-shown
@@ -98,7 +98,7 @@ const addEvenEmitterToBacklogShown = () => {
  * @param {function} handler function to handle the event
  * @returns {string} name of the event
  */
-const onBacklogShown = on ('jirafa-backlog-shown');
+const onBacklogShown = handler => on (handler) ('jirafa-backlog-shown');
 
 /**
  * Adds event emitter to JIRA Backlog drawn triggering jirafa-backlog-drawn
@@ -122,7 +122,7 @@ const addEvenEmitterToBacklogDrawn = () => {
  * @param {function} handler function to handle the event
  * @returns {string} name of the event
  */
-const onBacklogDrawn = on ('jirafa-backlog-drawn');
+const onBacklogDrawn = handler => on (handler) ('jirafa-backlog-drawn');
 
 /**
  * Adds event emitter to JIRA Backlog updated jirafa-backlog-updated
@@ -140,14 +140,13 @@ const addEvenEmitterToBacklogUpdated = () => {
     return event;
 };
 
-
 /**
  * Adds a handler function to the event of JIRA Backlog updated (data loaded and issues displayed)
  * @impure calls impure function on
  * @param {function} handler function to handle the event
  * @returns {string} name of the event
  */
-const onBacklogUpdated = on ('jirafa-backlog-updated');
+const onBacklogUpdated = handler => on (handler) ('jirafa-backlog-updated');
 
 /**
  * Adds event emitter to JIRA Active Sprints updated jirafa-active-sprints-updated
@@ -171,7 +170,7 @@ const addEvenEmitterToActiveSprintsUpdated = () => {
  * @param {function} handler function to handle the event
  * @returns {string} name of the event
  */
-const onActiveSprintsUpdated = on ('jirafa-active-sprints-updated');
+const onActiveSprintsUpdated = handler => on (handler) ('jirafa-active-sprints-updated');
 
 /**
  * Adds all JIRAfa event emitters to GH object methods

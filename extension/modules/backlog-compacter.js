@@ -38,25 +38,28 @@ const moveExtraFieldsAndCompactIssue = issue => {
 
 /**
  * Removes extra items with None value
- * @returns {null} since elements are removed, nothing is returned
+ * @param {JQuery} backlogIssues backlog issues where we should perform the changes
+ * @returns {JQuery} backlogIssues without extra items
  */
-const removeExtraItemsWithNoneValue = () => $ ('span.ghx-extra-field-content:contains(None)').remove ();
+const removeExtraItemsWithNoneValue = backlogIssues =>
+    backlogIssues.find ('span.ghx-extra-field-content:contains(None)').remove () && backlogIssues;
 
 
 /**
  * Compacts UI of all issues in backlog so they are displayed as one line
  * @returns {Promise<JQuery>} Promise with JQuery elements of .js-issue:not(.JIRAfaCompacted)
  */
-const compactBacklogIssues = async () => {
-    removeExtraItemsWithNoneValue ();
+const compactBacklogIssues = () => {
     const backlogIssues = $ ('.js-issue:not(.JIRAfaCompacted)');
-    backlogIssues.each ((index, issue) => {
-        moveEpicAndVersion (issue);
-        compactAndMoveExtraFieldsContent (issue);
-        moveExtraFieldsAndCompactIssue (issue);
-        $ (issue).addClass ('JIRAfaCompacted');
-    });
-    log (backlogIssues.length + ' of issues was compacted in backlog.');
+    if (backlogIssues.length > 0) {
+        removeExtraItemsWithNoneValue (backlogIssues).each ((index, issue) => {
+            moveEpicAndVersion (issue);
+            compactAndMoveExtraFieldsContent (issue);
+            moveExtraFieldsAndCompactIssue (issue);
+            $ (issue).addClass ('JIRAfaCompacted');
+        });
+        log (backlogIssues.length + ' of issues was compacted in backlog.');
+    }
     return backlogIssues;
 };
 
@@ -65,6 +68,7 @@ const compactBacklogIssues = async () => {
  * @returns {null} it has nothing to return
  */
 const makeBacklogIssuesAlwaysCompact = () => {
+    compactBacklogIssues ();
     onBacklogDrawn (compactBacklogIssues);
     onBacklogUpdated (compactBacklogIssues);
     log ('Backlog issues will always be compact.');

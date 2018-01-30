@@ -12,7 +12,7 @@ const out = func => style => message => func (`%cJIRAfa: ${message}`, style) || 
  * @param {*} message to be printed to console
  * @returns {*} original message
  */
-const log = out (console.log) ('color: #86d8f7');
+const log = message => out (console.log) ('color: #86d8f7') (message);
 
 /**
  * Outputs console.error depending on log level.
@@ -20,7 +20,7 @@ const log = out (console.log) ('color: #86d8f7');
  * @param {*} message to be printed to console
  * @returns {*} original message
  */
-const error = out (console.error) ('color: #f00');
+const error = message => out (console.error) ('color: #f00') (message);
 
 export {
     log,
