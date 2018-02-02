@@ -1,5 +1,5 @@
 import {log} from './logger.js';
-import {composePipe} from './functional-programming.js';
+import {composePipe, id} from './functional-programming.js';
 import {onBacklogDrawn, onBacklogUpdated} from './jira-event-manager.js';
 
 /**
@@ -91,14 +91,11 @@ const compactBacklogIssues = () => {
 /**
  * Makes backlog issues always compact
  * @impure well... JQuery
- * @returns {null} it has nothing to return
+ * @returns {compactBacklogIssues} makeBacklogIssuesAlwaysCompact :: null -> (a -> b)
  */
-const makeBacklogIssuesAlwaysCompact = () => {
-    compactBacklogIssues ();
-    onBacklogDrawn (compactBacklogIssues);
-    onBacklogUpdated (compactBacklogIssues);
-    log ('Backlog issues will always be compact.');
-};
+const makeBacklogIssuesAlwaysCompact = () =>
+    log ('Backlog issues will always be compact.') &&
+    composePipe (id, onBacklogDrawn, onBacklogUpdated) (compactBacklogIssues);
 
 export {
     makeBacklogIssuesAlwaysCompact

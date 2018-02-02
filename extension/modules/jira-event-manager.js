@@ -1,23 +1,23 @@
 /**
  * Returns boolean whether JIRA GrassHopper object is currently available
  * @impure depends on global GH object
- * @returns {boolean} true if JIRA GH object is available
+ * @return {boolean} true if JIRA GH object is available
  */
 const isGHAvailable = () => typeof GH !== 'undefined';
 
 /**
  * Curry to trigger handler on event
  * @impure calls document.addEventListener
- * @param {function} handler function to handle the event
- * @returns {function(function=): (string)} curried function to add event handler
+ * @param {string} event name of the event
+ * @return {function} on :: String -> (a -> b) -> (a -> b)
  */
-const on = handler => event => document.addEventListener (event, handler) || event;
+const on = event => handler => document.addEventListener (event, handler) || handler;
 
 /**
  * Triggers (dispatches) an event
  * @impure calls document.dispatchEvent
  * @param {string} event name of the event
- * @returns {boolean} always true
+ * @return {boolean} always true
  */
 const trigger = event => document.dispatchEvent (new Event (event));
 
@@ -25,7 +25,7 @@ const trigger = event => document.dispatchEvent (new Event (event));
  * Sets active view based on current url
  * @pure
  * @param {string} url url to be checked
- * @returns {string} active view
+ * @return {string} active view
  */
 const getActiveView = url =>
     url.includes ('rapidView') ?
@@ -37,7 +37,7 @@ const getActiveView = url =>
 /**
  * Adds event emitter to popstate
  * @impure edits window.onpopstate and calls impure function trigger
- * @returns {string} a name of the event
+ * @return {string} a name of the event
  */
 const addEventEmitterToOnPopState =
     (event => () => (window.onpopstate = () => trigger (event)) && event) ('jirafa-onpopstate');
@@ -46,9 +46,9 @@ const addEventEmitterToOnPopState =
  * Adds a handler function to the event popstate
  * @impure calls impure function on
  * @param {function} handler function to handle the event
- * @returns {string} name of the event
+ * @return {function} onPopState :: (a -> b) -> (a -> b)
  */
-const onPopState = handler => on (handler) ('jirafa-onpopstate');
+const onPopState = on ('jirafa-onpopstate');
 
 /**
  * Adds event emitter to JIRA on active view change triggering jirafa-active-view-changed
@@ -72,9 +72,9 @@ const addEvenEmitterToActiveViewChanged = () => {
  * Adds a handler function to the event of JIRA active view change
  * @impure calls impure function on
  * @param {function} handler function to handle the event
- * @returns {string} name of the event
+ * @return {function} onActiveViewChanged :: (a -> b) -> (a -> b)
  */
-const onActiveViewChanged = handler => on (handler) ('jirafa-active-view-changed');
+const onActiveViewChanged = on ('jirafa-active-view-changed');
 
 /**
  * Adds event emitter to JIRA Backlog shown triggering jirafa-backlog-shown
@@ -96,9 +96,9 @@ const addEvenEmitterToBacklogShown = () => {
  * Adds a handler function to the event of JIRA Backlog shown (data not loaded and issues not displayed)
  * @impure calls impure function on
  * @param {function} handler function to handle the event
- * @returns {string} name of the event
+ * @return {function} onBacklogShown :: (a -> b) -> (a -> b)
  */
-const onBacklogShown = handler => on (handler) ('jirafa-backlog-shown');
+const onBacklogShown = on ('jirafa-backlog-shown');
 
 /**
  * Adds event emitter to JIRA Backlog drawn triggering jirafa-backlog-drawn
@@ -120,9 +120,9 @@ const addEvenEmitterToBacklogDrawn = () => {
  * Adds a handler function to the event of JIRA Backlog drawn (data loaded and issues displayed)
  * @impure calls impure function on
  * @param {function} handler function to handle the event
- * @returns {string} name of the event
+ * @return {function} onBacklogDrawn :: (a -> b) -> (a -> b)
  */
-const onBacklogDrawn = handler => on (handler) ('jirafa-backlog-drawn');
+const onBacklogDrawn = on ('jirafa-backlog-drawn');
 
 /**
  * Adds event emitter to JIRA Backlog updated jirafa-backlog-updated
@@ -144,9 +144,9 @@ const addEvenEmitterToBacklogUpdated = () => {
  * Adds a handler function to the event of JIRA Backlog updated (data loaded and issues displayed)
  * @impure calls impure function on
  * @param {function} handler function to handle the event
- * @returns {string} name of the event
+ * @return {function} onBacklogUpdated :: (a -> b) -> (a -> b)
  */
-const onBacklogUpdated = handler => on (handler) ('jirafa-backlog-updated');
+const onBacklogUpdated = on ('jirafa-backlog-updated');
 
 /**
  * Adds event emitter to JIRA Active Sprints updated jirafa-active-sprints-updated
@@ -168,9 +168,9 @@ const addEvenEmitterToActiveSprintsUpdated = () => {
  * Adds a handler function to the event of JIRA Active Sprints updated (data loaded and issues displayed)
  * @impure calls impure function on
  * @param {function} handler function to handle the event
- * @returns {string} name of the event
+ * @return {function} onActiveSprintsUpdated :: (a -> b) -> (a -> b)
  */
-const onActiveSprintsUpdated = handler => on (handler) ('jirafa-active-sprints-updated');
+const onActiveSprintsUpdated = on ('jirafa-active-sprints-updated');
 
 /**
  * Adds all JIRAfa event emitters to GH object methods
