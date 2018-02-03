@@ -1,13 +1,13 @@
 import {log} from '../utilities/logger.js';
 import {composePipe, id} from '../utilities/functional-programming.js';
+import * as $$ from '../utilities/functional-jquery.js';
 import {onBacklogDrawn, onBacklogUpdated} from './event-manager.js';
 
 /**
  * Returns the end element of a single backlog issue
- * @param {JQuery} issue JIRA .js-issue node
  * @return {JQuery} findTheEndOfIssue :: JQuery -> JQuery
  */
-const findTheEndOfIssue = issue => issue.find ('.ghx-end');
+const findTheEndOfIssue = $$.find ('.ghx-end');
 
 /**
  * Finds extra fields content of a single issue, compacts it and prepends to a target element
@@ -15,57 +15,57 @@ const findTheEndOfIssue = issue => issue.find ('.ghx-end');
  * @return {JQuery} compactAndMoveExtraFieldsContent :: JQuery -> JQuery
  */
 const compactAndMoveExtraFieldsContent = issue =>
-    issue.find ('.ghx-extra-field-content')
-        .addClass ('aui-label')
-        .parent ().removeClass ('ghx-extra-field')
-        .prependTo (findTheEndOfIssue (issue))
-    && issue;
+    $$.toFound ('.ghx-extra-field-content') (composePipe (
+        $$.addClass ('aui-label'),
+        $$.toParent (composePipe (
+            $$.removeClass ('ghx-extra-field'),
+            $$.prependTo (findTheEndOfIssue (issue))
+        ))
+    )) (issue);
+
 /**
  * Finds Epic and Version elements and prepends to a target element
  * @param {JQuery} issue JIRA .js-issue node
  * @return {JQuery} moveEpicAndVersion :: JQuery -> JQuery
  */
 const moveEpicAndVersion = issue =>
-    issue.find ('.ghx-end .aui-label').prependTo (findTheEndOfIssue (issue)) && issue;
+    $$.toFound ('.ghx-end .aui-label') ($$.prependTo (findTheEndOfIssue (issue))) (issue);
 
 /**
  * Finds extra fields, appends them to a target element and compacts the issue
  * @param {JQuery} issue JIRA .js-issue element
  * @return {JQuery} moveExtraFieldsAndCompactIssue :: JQuery -> JQuery
  */
-const moveExtraFieldsAndCompactIssue = issue => {
-    const extraFields = issue.find ('.ghx-plan-extra-fields');
-    extraFields.parent ().append (findTheEndOfIssue (issue));
-    extraFields.remove ();
-    return issue;
-};
+const moveExtraFieldsAndCompactIssue = issue =>
+    $$.toFound ('.ghx-plan-extra-fields') (composePipe (
+        $$.toParent (
+            $$.append (findTheEndOfIssue (issue))
+        ),
+        $$.removeMe
+    )) (issue);
 
 /**
  * Removes extra items with None value
- * @param {JQuery} backlogIssues backlog issues where we should perform the changes
  * @return {JQuery} removeExtraItemsWithNoneValue :: JQuery -> JQuery
  */
-const removeExtraItemsWithNoneValue = backlogIssues =>
-    backlogIssues.find ('span.ghx-extra-field-content:contains(None)').remove () && backlogIssues;
+const removeExtraItemsWithNoneValue = $$.remove ('span.ghx-extra-field-content:contains(None)');
 
 /**
  * Marks issue as processed by adding css class JIRAfaCompacted
- * @param {JQuery} issue issue JIRA .js-issue element
  * @return {JQuery} markIssueAsProcessed :: JQuery -> JQuery
  */
-const markIssueAsProcessed = issue => issue.addClass ('JIRAfaCompacted');
+const markIssueAsProcessed = $$.addClass ('JIRAfaCompacted');
 
 /**
  * Processes a single backlog issue making it more compact
- * @param {JQuery} issue issue JIRA .js-issue element
  * @return {JQuery} compactIssue :: JQuery -> JQuery
  */
-const compactIssue = issue => composePipe (
+const compactIssue = composePipe (
     moveEpicAndVersion,
     compactAndMoveExtraFieldsContent,
     moveExtraFieldsAndCompactIssue,
     markIssueAsProcessed
-) (issue);
+);
 
 /**
  * Gets JQuery of backlog issues to process
