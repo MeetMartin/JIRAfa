@@ -1,6 +1,6 @@
 import assert from 'assert';
 
-import {log, error} from '../extension/modules/logger.js';
+import {log, error} from '../extension/utilities/logger.js';
 
 const fnc = () => true;
 const obj = { hello: 'can you hear me?' };

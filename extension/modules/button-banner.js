@@ -1,5 +1,5 @@
-import {log, error} from "./logger.js";
-import {onActiveViewChanged, getActiveView} from './jira-event-manager.js';
+import {log, error} from "../utilities/logger.js";
+import {onActiveViewChanged, getActiveView} from './event-manager.js';
 import {createSprintsButton} from './sprints-button.js';
 import {createEpicsButton} from "./epics-button.js";
 

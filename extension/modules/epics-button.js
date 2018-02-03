@@ -1,5 +1,5 @@
 import {createDropdown} from './button.js';
-import {onBacklogUpdated} from "./jira-event-manager.js";
+import {onBacklogUpdated} from "./event-manager.js";
 
 /**
  * Toggles epic filtering

@@ -1,6 +1,6 @@
-import {log} from './logger.js';
-import {composePipe, id} from './functional-programming.js';
-import {onBacklogDrawn, onBacklogUpdated} from './jira-event-manager.js';
+import {log} from '../utilities/logger.js';
+import {composePipe, id} from '../utilities/functional-programming.js';
+import {onBacklogDrawn, onBacklogUpdated} from './event-manager.js';
 
 /**
  * Returns the end element of a single backlog issue

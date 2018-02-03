@@ -1,6 +1,6 @@
-import {log} from './modules/logger.js';
+import {log} from './utilities/logger.js';
 import {addJIRAfaEventEmitters, onBacklogUpdated, onBacklogDrawn, onBacklogShown, onActiveSprintsUpdated,
-    onActiveViewChanged, onPopState} from './modules/jira-event-manager.js';
+    onActiveViewChanged, onPopState} from './modules/event-manager.js';
 import {makeBacklogIssuesAlwaysCompact} from './modules/backlog-compacter.js';
 import {addButtonBanner} from './modules/button-banner.js';
 

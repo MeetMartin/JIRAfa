@@ -21,9 +21,9 @@
   ],
   "web_accessible_resources": [
     "main.js",
-    "modules/functional-programming.js",
+    "utilities/logger.js",
+    "utilities/functional-programming.js",
     "modules/jira-event-manager.js",
-    "modules/logger.js",
     "modules/backlog-compacter.js",
     "modules/button.js",
     "modules/button-banner.js",
