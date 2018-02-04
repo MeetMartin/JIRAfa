@@ -8,7 +8,7 @@ import {getWindow} from './mocks/window.mock.js';
 import logger from './mocks/modules/logger.mock.js';
 
 proxy.noCallThru ();
-const Test = proxy ('../extension/modules/event-manager.js', { './logger.js': logger });
+const Test = proxy ('../extension/modules/event-manager.js', { '../utilities/logger.js': logger });
 
 beforeEach (() => {
     global.GH = getGH ();
