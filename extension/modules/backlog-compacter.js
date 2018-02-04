@@ -85,7 +85,7 @@ const compactBacklogIssues = () => (issues => issues.length > 0 ?
 
 /**
  * Makes backlog issues always compact
- * @returns {compactBacklogIssues} makeBacklogIssuesAlwaysCompact :: null -> (a -> b)
+ * @returns {compactBacklogIssues} makeBacklogIssuesAlwaysCompact :: () -> (a -> b)
  */
 const makeBacklogIssuesAlwaysCompact = () =>
     log ('Backlog issues will always be compact.') &&

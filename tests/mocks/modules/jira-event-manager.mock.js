@@ -1,3 +1,4 @@
+const id = a => a;
 const isGHAvailable = () => true;
 const addJIRAfaEventEmitters = () => true;
 const getActiveView = () => url =>
@@ -6,12 +7,12 @@ const getActiveView = () => url =>
         url.includes ('view=reporting') ? 'Reports' :
         'Active Sprints' :
     url.includes ('browse') ? 'Open Issue' : 'Unknown';
-const onPopState = handler => handler ();
-const onActiveViewChanged = handler => handler ();
-const onBacklogShown = handler => handler ();
-const onBacklogDrawn = handler => handler ();
-const onBacklogUpdated = handler => handler ();
-const onActiveSprintsUpdated = handler => handler ();
+const onPopState = id;
+const onActiveViewChanged = id;
+const onBacklogShown = id;
+const onBacklogDrawn = id;
+const onBacklogUpdated = id;
+const onActiveSprintsUpdated = id;
 
 export default {
     isGHAvailable,
