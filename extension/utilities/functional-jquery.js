@@ -33,6 +33,12 @@ const prependTo = target => $ => $.prependTo (target);
 // append :: JQuery -> JQuery -> JQuery
 const append = target => $ => $.append (target);
 
+// hide :: JQuery -> JQuery
+const hide = $ => $.hide ();
+
+// show :: JQuery -> JQuery
+const show = $ => $.show ();
+
 export {
     find,
     toFound,
@@ -43,5 +49,7 @@ export {
     addClass,
     removeClass,
     prependTo,
-    append
+    append,
+    hide,
+    show
 };

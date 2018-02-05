@@ -1,4 +1,5 @@
-import {log, error} from "../utilities/logger.js";
+import {log} from "../utilities/logger.js";
+import * as $$ from '../utilities/functional-jquery.js';
 import {onActiveViewChanged, getActiveView} from './event-manager.js';
 import {createSprintsButton} from './sprints-button.js';
 import {createEpicsButton} from "./epics-button.js";
@@ -12,54 +13,37 @@ const buttonBanner = $ ('<div id="jirafa-button-banner" class="ghx-controls-list
         '<dt style="text-transform:none;">JIRAfa:</dt>' +
     '</dl></div>');
 
+const viewIntoClassMap = new Map ([
+    ['Backlog', 'jirafa-display-backlog'],
+    ['Active Sprints', 'jirafa-active-sprints'],
+    ['Reports', 'jirafa-display-reports']
+]);
+
 /**
  * Converts Agile view name into class name
  * @param {string} result previous result
  * @param {string} view views Backlog | Active Sprints | Reports
  * @returns {string} previous result with new class
  */
-const viewIntoClass = (result, view) => {
-    switch (view) {
-        case 'Backlog':
-            return result + ' jirafa-display-backlog';
-        case 'Active Sprints':
-            return result + ' jirafa-display-active-sprints';
-        case 'Reports':
-            return result + ' jirafa-display-reports';
-        default:
-            error ('Unknown Agile view was passed for a button.');
-            return result;
-    }
-};
+const viewIntoClass = (result, view) => (
+        map => map.has (view) ? result + ' ' + map.get (view) : result
+    ) (viewIntoClassMap);
 
 /**
  * Displays buttons depending on active Agile view
  * @returns {null} nothing to return
  */
-const updateButtonsBasedOnAgileView = () => {
-    $ ('.jirafa-display-backlog, .jirafa-display-active-sprints, .jirafa-display-reports').hide ();
-    switch (getActiveView (String (window.location))) {
-        case 'Backlog':
-            $ ('.jirafa-display-backlog').show ();
-            break;
-        case 'Active Sprints':
-            $ ('.jirafa-display-active-sprints').show ();
-            break;
-        case 'Reports':
-            $ ('.jirafa-display-reports').show ();
-            break;
-        default:
-            error ('Unknown Agile view was passed for displaying buttons.');
-    }
-    log ('Button displays updated.');
-};
-
+const updateButtonsBasedOnAgileView = () =>
+    $$.hide ($ ('.jirafa-display-backlog, .jirafa-display-active-sprints, .jirafa-display-reports')) &&
+    (
+        activeView => map => map.has (activeView) && $$.show ($ ('.' + map.get (activeView)))
+    ) (getActiveView (String (window.location))) (viewIntoClassMap);
 
 /**
  * Attaches button banner to JIRA DOM into #ghx-controls for all Agile views
  * @returns {JQuery} button banner
  */
-const attachButtonBannerToJIRA = () => buttonBanner.prependTo ('#ghx-controls');
+const attachButtonBannerToJIRA = () => (banner => $$.prependTo ('#ghx-controls', banner)) (buttonBanner);
 
 /**
  * Adds button to the button banners
@@ -69,8 +53,7 @@ const attachButtonBannerToJIRA = () => buttonBanner.prependTo ('#ghx-controls');
  */
 const addButton = (views, createButton) => {
     const finalButton = createButton ();
-    const classes = views.reduce (viewIntoClass, '').substr (1); // Serves to hide and show buttons based on active view
-    finalButton.attr ('class', finalButton.attr ('class') + ' ' + classes);
+    finalButton.attr ('class', finalButton.attr ('class') + ' ' + views.reduce (viewIntoClass, '').substr (1));
     buttonBanner.find ('.ghx-controls-filters').append (finalButton);
 };
 
@@ -78,7 +61,7 @@ const addButton = (views, createButton) => {
  * Adds button banner to JIRA
  * @returns {null} nothing to return
  */
-const addButtonBanner = () => {
+const activateButtonBanner = () => {
     addButton (['Backlog'], createSprintsButton);
     addButton (['Backlog'], createEpicsButton);
     attachButtonBannerToJIRA ();
@@ -88,5 +71,5 @@ const addButtonBanner = () => {
 };
 
 export {
-    addButtonBanner
+    activateButtonBanner
 };
