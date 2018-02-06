@@ -51,6 +51,9 @@ const show = $ => $.show ();
 // onClick :: (a -> b) -> JQuery -> JQuery
 const onClick = handler => $ => $.click (handler);
 
+// onDoubleClick :: (a -> b) -> JQuery -> JQuery
+const onDoubleClick = handler => $ => $.dblclick (handler);
+
 export {
     find,
     toFound,
@@ -67,5 +70,6 @@ export {
     appendTo,
     hide,
     show,
-    onClick
+    onClick,
+    onDoubleClick
 };

@@ -59,14 +59,39 @@ const markIssueAsProcessed = $$.addClass ('JIRAfaCompacted');
 /**
  * Makes epic work as a toggle filter button for epics
  * @param {JQuery} issue JIRA .js-issue element
- * @returns {JQuery} makeEpicAFilter :: JQuery -> JQuery
+ * @return {JQuery} makeEpicAFilter :: JQuery -> JQuery
  */
 const makeEpicAFilter = issue =>
     $$.toFound ('span[data-epickey]') (
         $$.onClick (event => GH.EpicView.toggleFiltering (
-            $ (`<span data-epic-key="${$$.getAttr ('data-epickey') ($ (event.target))}"></span>`)) || false
+            $ (`<span data-epic-key="${$$.getAttr ('data-epickey') ($ (event.currentTarget))}"></span>`)) || false
         )
     ) (issue);
+
+/**
+ * Opens a new tab based on given url
+ * @param {String} url url to be opened
+ * @returns {Window} openIssueInNewTab :: String -> Window
+ */
+const openIssueInNewTab = url => window.open (url, '_blank');
+
+/**
+ * Makes issue details open on double click on an issue in backlog
+ * @return {JQuery} openIssueOnDoubleClick :: JQuery -> JQuery
+ */
+const openIssueOnDoubleClick = $$.onDoubleClick (event => openIssueInNewTab (
+    pipe ($$.find ('.js-key-link'), $$.getAttr ('href')) ($ (event.currentTarget))
+));
+
+/**
+ * Prevents click from opening the small issue detail
+ * @return {JQuery} preventDefaultClick :: JQuery -> JQuery
+ */
+const preventDefaultClick = pipe (
+    $$.onClick (() => false),
+    $$.toFound ('.js-key-link') ($$.onClick (
+        event => openIssueInNewTab ($$.getAttr ('href') ($ (event.currentTarget)))
+    )));
 
 /**
  * Processes a single backlog issue making it more compact
@@ -77,6 +102,8 @@ const compactIssue = pipe (
     compactAndMoveExtraFieldsContent,
     moveExtraFieldsAndCompactIssue,
     makeEpicAFilter,
+    openIssueOnDoubleClick,
+    preventDefaultClick,
     markIssueAsProcessed
 );
 
