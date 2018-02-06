@@ -84,14 +84,24 @@ const openIssueOnDoubleClick = $$.onDoubleClick (event => openIssueInNewTab (
 ));
 
 /**
- * Prevents click from opening the small issue detail
- * @return {JQuery} preventDefaultClick :: JQuery -> JQuery
+ * Opens an issue in a new tab based on a click on its key in backlog
+ * @return {JQuery} openIssueOnItsKeyClick :: JQuery -> JQuery
  */
-const preventDefaultClick = pipe (
-    $$.onClick (() => false),
+const openIssueOnItsKeyClick =
     $$.toFound ('.js-key-link') ($$.onClick (
         event => openIssueInNewTab ($$.getAttr ('href') ($ (event.currentTarget)))
-    )));
+    ));
+
+/**
+ * Makes sure that detail view is not getting opened in backlog however link is working
+ * @returns {Boolean} () -> Boolean
+ */
+const blockIssueDetail = () => {
+    GH.PlanController.isDetailsViewOpened = () => false;
+    GH.PlanController.updateDetailsView = () => null;
+    GH.PlanController.setDetailViewOpenedState = () => null;
+    return true;
+};
 
 /**
  * Processes a single backlog issue making it more compact
@@ -103,7 +113,7 @@ const compactIssue = pipe (
     moveExtraFieldsAndCompactIssue,
     makeEpicAFilter,
     openIssueOnDoubleClick,
-    preventDefaultClick,
+    openIssueOnItsKeyClick,
     markIssueAsProcessed
 );
 
@@ -119,8 +129,8 @@ const issuesToProcess = () => $ ('.js-issue:not(.JIRAfaCompacted)');
  */
 const compactBacklogIssues = () => (issues => issues.length > 0 ?
     log (issues.length + ' of issues was compacted in backlog.') &&
-        removeExtraItemsWithNoneValue (issues).each ((index, issue) => compactIssue ($ (issue))) &&
-            issues :
+    removeExtraItemsWithNoneValue (issues).each ((index, issue) => compactIssue ($ (issue))) &&
+        issues :
     issues) (issuesToProcess ());
 
 /**
@@ -129,6 +139,7 @@ const compactBacklogIssues = () => (issues => issues.length > 0 ?
  */
 const makeBacklogIssuesAlwaysCompact = () =>
     log ('Backlog issues will always be compact.') &&
+    blockIssueDetail () &&
     pipe (id, onBacklogDrawn, onBacklogUpdated) (compactBacklogIssues);
 
 export {
