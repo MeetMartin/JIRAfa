@@ -3,7 +3,7 @@
  * @param {function} fns functions to be composed
  * @returns {function} composePipe :: [(a -> b)] -> (a -> b)
  */
-const composePipe = (...fns) => fns.reduceRight ((f, g) => (...args) => f (g (...args)));
+const pipe = (...fns) => fns.reduceRight ((f, g) => (...args) => f (g (...args)));
 
 /**
  * Identity
@@ -13,6 +13,6 @@ const composePipe = (...fns) => fns.reduceRight ((f, g) => (...args) => f (g (..
 const id = x => x;
 
 export {
-    composePipe,
+    pipe,
     id
 };

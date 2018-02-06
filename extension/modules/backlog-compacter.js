@@ -1,5 +1,5 @@
 import {log} from '../utilities/logger.js';
-import {composePipe, id} from '../utilities/functional-programming.js';
+import {pipe, id} from '../utilities/functional-programming.js';
 import * as $$ from '../utilities/functional-jquery.js';
 import {onBacklogDrawn, onBacklogUpdated} from './event-manager.js';
 
@@ -15,9 +15,9 @@ const findTheEndOfIssue = $$.find ('.ghx-end');
  * @return {JQuery} compactAndMoveExtraFieldsContent :: JQuery -> JQuery
  */
 const compactAndMoveExtraFieldsContent = issue =>
-    $$.toFound ('.ghx-extra-field-content') (composePipe (
+    $$.toFound ('.ghx-extra-field-content') (pipe (
         $$.addClass ('aui-label'),
-        $$.toParent (composePipe (
+        $$.toParent (pipe (
             $$.removeClass ('ghx-extra-field'),
             $$.prependTo (findTheEndOfIssue (issue))
         ))
@@ -37,7 +37,7 @@ const moveEpicAndVersion = issue =>
  * @return {JQuery} moveExtraFieldsAndCompactIssue :: JQuery -> JQuery
  */
 const moveExtraFieldsAndCompactIssue = issue =>
-    $$.toFound ('.ghx-plan-extra-fields') (composePipe (
+    $$.toFound ('.ghx-plan-extra-fields') (pipe (
         $$.toParent (
             $$.append (findTheEndOfIssue (issue))
         ),
@@ -60,7 +60,7 @@ const markIssueAsProcessed = $$.addClass ('JIRAfaCompacted');
  * Processes a single backlog issue making it more compact
  * @return {JQuery} compactIssue :: JQuery -> JQuery
  */
-const compactIssue = composePipe (
+const compactIssue = pipe (
     moveEpicAndVersion,
     compactAndMoveExtraFieldsContent,
     moveExtraFieldsAndCompactIssue,
@@ -89,7 +89,7 @@ const compactBacklogIssues = () => (issues => issues.length > 0 ?
  */
 const makeBacklogIssuesAlwaysCompact = () =>
     log ('Backlog issues will always be compact.') &&
-    composePipe (id, onBacklogDrawn, onBacklogUpdated) (compactBacklogIssues);
+    pipe (id, onBacklogDrawn, onBacklogUpdated) (compactBacklogIssues);
 
 export {
     makeBacklogIssuesAlwaysCompact
