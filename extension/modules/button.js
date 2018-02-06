@@ -21,7 +21,7 @@ const showMenu = (menu, parentButton) => {
 const addMenuOption = (menu, item, onclick) => {
     const option = $ (`<li><a>${item}</a></li>`);
     option.find ('a')
-        .mouseover (event => $ (event.target).addClass ('active').addClass ('aui-dropdown2-active'))
+        .mouseover (event => $ (event.target).addClass ('active aui-dropdown2-active'))
         .mouseout (event => $ (event.target).removeClass ('active').removeClass ('aui-dropdown2-active'));
     option.appendTo (menu.find ('ul'));
     option.click (onclick);

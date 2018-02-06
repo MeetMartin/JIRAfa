@@ -48,6 +48,9 @@ const hide = $ => $.hide ();
 // show :: JQuery -> JQuery
 const show = $ => $.show ();
 
+// onClick :: (a -> b) -> JQuery -> JQuery
+const onClick = handler => $ => $.click (handler);
+
 export {
     find,
     toFound,
@@ -63,5 +66,6 @@ export {
     append,
     appendTo,
     hide,
-    show
+    show,
+    onClick
 };

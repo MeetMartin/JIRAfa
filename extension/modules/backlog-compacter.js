@@ -57,6 +57,18 @@ const removeExtraItemsWithNoneValue = $$.remove ('span.ghx-extra-field-content:c
 const markIssueAsProcessed = $$.addClass ('JIRAfaCompacted');
 
 /**
+ * Makes epic work as a toggle filter button for epics
+ * @param {JQuery} issue JIRA .js-issue element
+ * @returns {JQuery} makeEpicAFilter :: JQuery -> JQuery
+ */
+const makeEpicAFilter = issue =>
+    $$.toFound ('span[data-epickey]') (
+        $$.onClick (event => GH.EpicView.toggleFiltering (
+            $ (`<span data-epic-key="${$$.getAttr ('data-epickey') ($ (event.target))}"></span>`)) || false
+        )
+    ) (issue);
+
+/**
  * Processes a single backlog issue making it more compact
  * @return {JQuery} compactIssue :: JQuery -> JQuery
  */
@@ -64,6 +76,7 @@ const compactIssue = pipe (
     moveEpicAndVersion,
     compactAndMoveExtraFieldsContent,
     moveExtraFieldsAndCompactIssue,
+    makeEpicAFilter,
     markIssueAsProcessed
 );
 
