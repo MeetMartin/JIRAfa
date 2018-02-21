@@ -79,9 +79,10 @@ const openIssueInNewTab = url => window.open (url, '_blank');
  * Makes issue details open on double click on an issue in backlog
  * @return {JQuery} openIssueOnDoubleClick :: JQuery -> JQuery
  */
-const openIssueOnDoubleClick = $$.onDoubleClick (event => openIssueInNewTab (
-    pipe ($$.find ('.js-key-link'), $$.getAttr ('href')) ($ (event.currentTarget))
-));
+const openIssueOnDoubleClick =
+    $$.onDoubleClick (
+        event => openIssueInNewTab (pipe ($$.find ('.js-key-link'), $$.getAttr ('href')) ($ (event.currentTarget))
+    ));
 
 /**
  * Opens an issue in a new tab based on a click on its key in backlog
@@ -94,14 +95,15 @@ const openIssueOnItsKeyClick =
 
 /**
  * Makes sure that detail view is not getting opened in backlog however link is working
- * @returns {Boolean} () -> Boolean
+ * @return {Boolean} blockIssueDetail :: () -> Boolean
  */
-const blockIssueDetail = () => {
-    GH.PlanController.isDetailsViewOpened = () => false;
-    GH.PlanController.updateDetailsView = () => null;
-    GH.PlanController.setDetailViewOpenedState = () => null;
-    return true;
-};
+const blockIssueDetail = () => (GH.PlanController.updateDetailsView = () => null) && true;
+
+/**
+ * Removes detail view section from DOM
+ * @returns {JQuery} removed element
+ */
+const removeDetailViewDiv = () => $$.removeMe ($ ('#ghx-detail-view'));
 
 /**
  * Processes a single backlog issue making it more compact
@@ -129,13 +131,14 @@ const issuesToProcess = () => $ ('.js-issue:not(.JIRAfaCompacted)');
  */
 const compactBacklogIssues = () => (issues => issues.length > 0 ?
     log (issues.length + ' of issues was compacted in backlog.') &&
+    removeDetailViewDiv () &&
     removeExtraItemsWithNoneValue (issues).each ((index, issue) => compactIssue ($ (issue))) &&
         issues :
     issues) (issuesToProcess ());
 
 /**
  * Makes backlog issues always compact
- * @returns {compactBacklogIssues} makeBacklogIssuesAlwaysCompact :: () -> (a -> b)
+ * @return {compactBacklogIssues} makeBacklogIssuesAlwaysCompact :: () -> (a -> b)
  */
 const makeBacklogIssuesAlwaysCompact = () =>
     log ('Backlog issues will always be compact.') &&
