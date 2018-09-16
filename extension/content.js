@@ -24,6 +24,7 @@ const injectMain = () => {
 const isJIRA = () => $ ('meta[name="application-name"]').attr ('content') === 'JIRA';
 
 if (isJIRA ()) {
+    console.log (`%cJIRAfa: JIRA recognized`,'color: #86d8f7')
     // Making possible communication between modules and extension content script
     window.addEventListener ('message', event => {
         if (event.source !== window) return;
