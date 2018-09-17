@@ -99,7 +99,8 @@ describe ('Jira Event Manager', () => {
 
     describe ('getActiveView', () => {
         it ('should return Unknown on unrecognized urls', () => {
-            assert.deepStrictEqual (Test.getActiveView ('https://domain.tld/nonsense'), 'Unknown');
+            assert.deepStrictEqual (Test.getActiveView ('https://domain.tld/nonsense'),
+            'Unknown');
         });
 
         it ('should return Backlog if url contains "rapidView" and "view=planning"', () => {
@@ -120,7 +121,19 @@ describe ('Jira Event Manager', () => {
         });
 
         it ('should return Open Issue if url contains "browse" but not "rapidView"', () => {
-            assert.deepStrictEqual (Test.getActiveView ('https://domain.tld/browse/JIRAFA-1'), 'Open Issue');
+            assert.deepStrictEqual (Test.getActiveView ('https://domain.tld/browse/JIRAFA-1'),
+            'Open Issue');
+        });
+
+        it ('should return Report page if url contains "selectedItem=com.atlassian.jira.jira-projects-plugin:report-page" but not "rapidView"', () => {
+            assert.deepStrictEqual (Test.getActiveView (
+                'https://domain.tld/projects/JIRAFA?selectedItem=com.atlassian.jira.jira-projects-plugin:report-page'),
+                'Report Page');
+        });
+
+        it ('should return Projects if url contains "projects" but not "rapidView"', () => {
+            assert.deepStrictEqual (Test.getActiveView ('https://domain.tld/projects/JIRAFA'),
+            'Projects');
         });
     });
 });

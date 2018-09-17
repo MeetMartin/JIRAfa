@@ -21,10 +21,13 @@ const trigger = event => document.dispatchEvent (new Event (event)) && event;
  */
 const getActiveView = url =>
     url.includes ('rapidView') ?
-        url.includes ('view=planning') ? 'Backlog' :
-        url.includes ('view=reporting') ? 'Reports' :
-        'Active Sprints' :
-    url.includes ('browse') ? 'Open Issue' : 'Unknown';
+            url.includes ('view=planning') ? 'Backlog' :
+            url.includes ('view=reporting') ? 'Reports' :
+            'Active Sprints' :
+        url.includes ('browse') ? 'Open Issue' :
+        url.includes ('selectedItem=com.atlassian.jira.jira-projects-plugin:report-page') ? 'Report Page' :
+        url.includes ('projects') ? 'Projects' :
+        'Unknown';
 
 /**
  * Adds event emitter to popstate
