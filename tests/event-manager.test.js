@@ -1,7 +1,6 @@
 import assert from 'assert';
 import proxy from 'proxyquire';
 
-import {getGH} from './mocks/grass-hopper.mock.js';
 import {getDocument} from './mocks/document.mock.js';
 import {getWindow} from './mocks/window.mock.js';
 
@@ -11,29 +10,18 @@ proxy.noCallThru ();
 const Test = proxy ('../extension/modules/event-manager.js', { '../utilities/logger.js': logger });
 
 beforeEach (() => {
-    global.GH = getGH ();
     global.document = getDocument ();
     global.window = getWindow ();
     global.Event = global.window.Event;
 });
 
 afterEach (() => {
-    delete global.GH;
     delete global.document;
     delete global.window;
     delete global.Event;
 });
 
 describe ('Jira Event Manager', () => {
-    describe ('isGHAvailable', () => {
-        it ('should be false if GrassHopper objects are missing', () => {
-            delete global.GH;
-            assert.deepStrictEqual (Test.isGHAvailable (), false);
-        });
-        it ('should be true if GrassHopper objects are present', () => {
-            assert.deepStrictEqual (Test.isGHAvailable (), true);
-        });
-    });
 
     describe ('addJIRAfaEventEmitters', () => {
         it ('returns array with only one emitter name if GH object is not available', () => {

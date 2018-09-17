@@ -1,18 +1,32 @@
-import {log} from './utilities/logger.js';
-import {addJIRAfaEventEmitters, onBacklogUpdated, onBacklogDrawn, onBacklogShown, onActiveSprintsUpdated,
-    onActiveViewChanged, onPopState} from './modules/event-manager.js';
+import {log, error} from './utilities/logger.js';
+import {isJIRACompatible} from './utilities/compatibility.js';
 import {makeBacklogIssuesAlwaysCompact} from './modules/backlog-compacter.js';
 import {activateButtonBanner} from './modules/button-banner.js';
+import {
+    addJIRAfaEventEmitters,
+    onBacklogUpdated,
+    onBacklogDrawn,
+    onBacklogShown,
+    onActiveSprintsUpdated,
+    onActiveViewChanged,
+    onPopState
+} from './modules/event-manager.js';
 
-const emitters = addJIRAfaEventEmitters ();
-log (`${emitters.length} of emitters added.`);
+if (!isJIRACompatible ()) {
+    error ('JIRA is not compatible with the extension');
+} else {
+    log ('JIRA compatibility test passed.')
 
-onPopState (() => log ('URL changed.'));
-onActiveViewChanged (() => log ('Active view changed.'));
-onBacklogShown (() => log ('Backlog is shown.'));
-onBacklogDrawn (() => log ('Backlog is drawn.'));
-onBacklogUpdated (() => log ('Backlog updated.'));
-onActiveSprintsUpdated (() => log ('Active Sprints updated.'));
+    const emitters = addJIRAfaEventEmitters ();
+    log (`${emitters.length} emitters added.`);
 
-makeBacklogIssuesAlwaysCompact ();
-activateButtonBanner ();
+    onPopState (() => log ('URL changed.'));
+    onActiveViewChanged (() => log ('Active view changed.'));
+    onBacklogShown (() => log ('Backlog is shown.'));
+    onBacklogDrawn (() => log ('Backlog is drawn.'));
+    onBacklogUpdated (() => log ('Backlog updated.'));
+    onActiveSprintsUpdated (() => log ('Active Sprints updated.'));
+
+    makeBacklogIssuesAlwaysCompact ();
+    activateButtonBanner ();
+}

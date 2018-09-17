@@ -1,8 +1,4 @@
-/**
- * Returns boolean whether JIRA GrassHopper object is currently available
- * @return {Boolean} isGHAvailable :: () -> Boolean
- */
-const isGHAvailable = () => typeof GH !== 'undefined';
+import {isGHAvailable} from '../utilities/compatibility.js';
 
 /**
  * Curry to trigger handler on event
@@ -176,7 +172,6 @@ const addJIRAfaEventEmitters = () => {
 };
 
 export {
-    isGHAvailable,
     addJIRAfaEventEmitters,
     onPopState,
     onActiveViewChanged,

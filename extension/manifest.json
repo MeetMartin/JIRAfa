@@ -22,6 +22,7 @@
   "web_accessible_resources": [
     "main.js",
     "utilities/logger.js",
+    "utilities/compatibility.js",
     "utilities/functional-programming.js",
     "utilities/functional-jquery.js",
     "modules/event-manager.js",
