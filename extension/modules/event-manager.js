@@ -156,20 +156,14 @@ const onActiveSprintsUpdated = on ('jirafa-active-sprints-updated');
  * Adds all JIRAfa event emitters to GH object methods
  * @return {Array} addJIRAfaEventEmitters :: () -> [String]
  */
-const addJIRAfaEventEmitters = () => {
-    const alwaysAddedEventEmitters = [
-            addEventEmitterToOnPopState (),
-            addEvenEmitterToActiveViewChanged ()
-        ];
-    const agileEventEmitters = !isGHAvailable () ? [] :
-        [
-            addEvenEmitterToBacklogShown (),
-            addEvenEmitterToBacklogDrawn (),
-            addEvenEmitterToBacklogUpdated (),
-            addEvenEmitterToActiveSprintsUpdated ()
-        ];
-    return [].concat (alwaysAddedEventEmitters, agileEventEmitters);
-};
+const addJIRAfaEventEmitters = () => [
+    addEventEmitterToOnPopState (),
+    addEvenEmitterToActiveViewChanged (),
+    addEvenEmitterToBacklogShown (),
+    addEvenEmitterToBacklogDrawn (),
+    addEvenEmitterToBacklogUpdated (),
+    addEvenEmitterToActiveSprintsUpdated ()
+];
 
 export {
     addJIRAfaEventEmitters,

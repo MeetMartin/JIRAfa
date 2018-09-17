@@ -24,16 +24,7 @@ afterEach (() => {
 describe ('Jira Event Manager', () => {
 
     describe ('addJIRAfaEventEmitters', () => {
-        it ('returns array with only one emitter name if GH object is not available', () => {
-            delete global.GH;
-            assert.deepStrictEqual (Test.addJIRAfaEventEmitters ().length, 2);
-            assert.deepStrictEqual (Test.addJIRAfaEventEmitters (), [
-                'jirafa-onpopstate',
-                'jirafa-active-view-changed'
-            ]);
-        });
-
-        it ('returns array with 6 emitter names if GH object is available', () => {
+        it ('returns array with 6 emitters', () => {
             assert.deepStrictEqual (Test.addJIRAfaEventEmitters ().length, 6);
             assert.deepStrictEqual (Test.addJIRAfaEventEmitters (), [
                 'jirafa-onpopstate',
