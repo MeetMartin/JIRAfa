@@ -8,7 +8,8 @@ const getGH = () => {
             draw: () => 'draw'
         },
         PlanController: {
-            show: () => 'show'
+            show: () => 'show',
+            updateDetailsView: () => 'updateDetailsView'
         },
         PlanDragAndDrop: {
             enableDragAndDrop: () => 'enableDragAndDrop'

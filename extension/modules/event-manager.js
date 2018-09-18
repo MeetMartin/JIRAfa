@@ -20,14 +20,16 @@ const trigger = event => document.dispatchEvent (new Event (event)) && event;
  * @return {String} getActiveView :: String -> String
  */
 const getActiveView = url =>
-    url.includes ('rapidView') ?
+    url.includes ('rapidView')
+        ?
             url.includes ('view=planning') ? 'Backlog' :
             url.includes ('view=reporting') ? 'Reports' :
-            'Active Sprints' :
-        url.includes ('browse') ? 'Open Issue' :
-        url.includes ('selectedItem=com.atlassian.jira.jira-projects-plugin:report-page') ? 'Report Page' :
-        url.includes ('projects') ? 'Projects' :
-        'Unknown';
+            'Active Sprints'
+        :
+            url.includes ('browse') ? 'Open Issue' :
+            url.includes ('selectedItem=com.atlassian.jira.jira-projects-plugin:report-page') ? 'Report Page' :
+            url.includes ('projects') ? 'Projects' :
+            'Unknown';
 
 /**
  * Adds event emitter to popstate
@@ -137,7 +139,7 @@ const onBacklogUpdated = on ('jirafa-backlog-updated');
  * Adds event emitter to JIRA Active Sprints updated jirafa-active-sprints-updated
  * @return {String} addEvenEmitterToActiveSprintsUpdated :: () -> String
  */
-const addEvenEmitterToActiveSprintsUpdated = () => {
+/*const addEvenEmitterToActiveSprintsUpdated = () => {
     const event = 'jirafa-active-sprints-updated';
     const original = GH.WorkController.setPoolData;
     GH.WorkController.setPoolData = data => {
@@ -146,14 +148,14 @@ const addEvenEmitterToActiveSprintsUpdated = () => {
         return result;
     };
     return event;
-};
+};*/
 
 /**
  * Adds a handler function to the event of JIRA Active Sprints updated (data loaded and issues displayed)
  * @param {Function} handler function to handle the event
  * @return {Function} onActiveSprintsUpdated :: (a -> b) -> (a -> b)
  */
-const onActiveSprintsUpdated = on ('jirafa-active-sprints-updated');
+//const onActiveSprintsUpdated = on ('jirafa-active-sprints-updated');
 
 /**
  * Adds all JIRAfa event emitters to GH object methods
@@ -165,7 +167,7 @@ const addJIRAfaEventEmitters = () => [
     addEvenEmitterToBacklogShown (),
     addEvenEmitterToBacklogDrawn (),
     addEvenEmitterToBacklogUpdated (),
-    addEvenEmitterToActiveSprintsUpdated ()
+    //addEvenEmitterToActiveSprintsUpdated ()
 ];
 
 export {
@@ -176,5 +178,5 @@ export {
     onBacklogShown,
     onBacklogDrawn,
     onBacklogUpdated,
-    onActiveSprintsUpdated
+    //onActiveSprintsUpdated
 };

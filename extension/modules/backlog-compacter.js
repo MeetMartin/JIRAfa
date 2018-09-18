@@ -1,5 +1,5 @@
 import {log} from '../utilities/logger.js';
-import {pipe, id} from '../utilities/functional-programming.js';
+import {pipe} from '../utilities/functional-programming.js';
 import * as $$ from '../utilities/functional-jquery.js';
 import {onBacklogDrawn, onBacklogUpdated} from './event-manager.js';
 
@@ -129,12 +129,17 @@ const issuesToProcess = () => $ ('.js-issue:not(.JIRAfaCompacted)');
  * Compacts UI of all issues in backlog so they are displayed as one line
  * @return {JQuery} compactBacklogIssues :: () -> JQuery
  */
-const compactBacklogIssues = () => (issues => issues.length > 0 ?
-    log (issues.length + ' of issues was compacted in backlog.') &&
-    removeDetailViewDiv () &&
-    removeExtraItemsWithNoneValue (issues).each ((index, issue) => compactIssue ($ (issue))) &&
-        issues :
-    issues) (issuesToProcess ());
+const compactBacklogIssues = () =>
+    (issues =>
+        issues.length > 0
+            ?
+                log (issues.length + ' of issues was compacted in backlog.') &&
+                removeDetailViewDiv () &&
+                removeExtraItemsWithNoneValue (issues).each ((index, issue) => compactIssue ($ (issue))) &&
+                issues
+            :
+                issues
+    ) (issuesToProcess ());
 
 /**
  * Makes backlog issues always compact
@@ -143,7 +148,8 @@ const compactBacklogIssues = () => (issues => issues.length > 0 ?
 const makeBacklogIssuesAlwaysCompact = () =>
     log ('Backlog issues will always be compact.') &&
     blockIssueDetail () &&
-    pipe (id, onBacklogDrawn, onBacklogUpdated) (compactBacklogIssues);
+    compactBacklogIssues () &&
+    pipe (onBacklogDrawn, onBacklogUpdated) (compactBacklogIssues);
 
 export {
     makeBacklogIssuesAlwaysCompact

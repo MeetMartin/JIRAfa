@@ -7,7 +7,7 @@ import {
     onBacklogUpdated,
     onBacklogDrawn,
     onBacklogShown,
-    onActiveSprintsUpdated,
+    //onActiveSprintsUpdated,
     onActiveViewChanged,
     onPopState
 } from './modules/event-manager.js';
@@ -25,7 +25,7 @@ if (!isJIRACompatible ()) {
     onBacklogShown (() => log ('Backlog is shown.'));
     onBacklogDrawn (() => log ('Backlog is drawn.'));
     onBacklogUpdated (() => log ('Backlog updated.'));
-    onActiveSprintsUpdated (() => log ('Active Sprints updated.'));
+    //onActiveSprintsUpdated (() => log ('Active Sprints updated.')); // seems not to work as expected with latest JIRA
 
     makeBacklogIssuesAlwaysCompact ();
     activateButtonBanner ();

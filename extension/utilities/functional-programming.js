@@ -10,7 +10,7 @@ const pipe = (...fns) => fns.reduceRight ((f, g) => (...args) => f (g (...args))
  * @param {x} x anything
  * @returns {*} id :: a -> a
  */
-const id = x => x;
+const id = x => x; // TODO: is it supposed to work this way?
 
 export {
     pipe,

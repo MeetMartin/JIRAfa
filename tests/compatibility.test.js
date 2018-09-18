@@ -75,5 +75,14 @@ describe ('Jira Compatibility Tester', () => {
             delete global.GH.WorkController.setPoolData;
             assert.deepStrictEqual (isGHCompatible (), false);
         });
+
+        it ('should be true if GH.PlanController.updateDetailsView is defined', () => {
+            assert.deepStrictEqual (isGHCompatible (), true);
+        });
+
+        it ('should be false if GH.PlanController.updateDetailsView is not defined', () => {
+            delete global.GH.PlanController.updateDetailsView;
+            assert.deepStrictEqual (isGHCompatible (), false);
+        });
     });
 });

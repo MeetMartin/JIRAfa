@@ -25,14 +25,14 @@ describe ('Jira Event Manager', () => {
 
     describe ('addJIRAfaEventEmitters', () => {
         it ('returns array with 6 emitters', () => {
-            assert.deepStrictEqual (Test.addJIRAfaEventEmitters ().length, 6);
+            assert.deepStrictEqual (Test.addJIRAfaEventEmitters ().length, 5);
             assert.deepStrictEqual (Test.addJIRAfaEventEmitters (), [
                 'jirafa-onpopstate',
                 'jirafa-active-view-changed',
                 'jirafa-backlog-shown',
                 'jirafa-backlog-drawn',
                 'jirafa-backlog-updated',
-                'jirafa-active-sprints-updated'
+                //'jirafa-active-sprints-updated'
             ]);
         });
 
@@ -44,7 +44,7 @@ describe ('Jira Event Manager', () => {
             assert.deepStrictEqual (GH.BacklogView.draw (), 'draw');
             assert.deepStrictEqual (GH.PlanController.show (), 'show');
             assert.deepStrictEqual (GH.PlanDragAndDrop.enableDragAndDrop (), 'enableDragAndDrop');
-            assert.deepStrictEqual (GH.WorkController.setPoolData ('I am data'), 'setPoolData: I am data');
+            //assert.deepStrictEqual (GH.WorkController.setPoolData ('I am data'), 'setPoolData: I am data');
         });
     });
 
@@ -80,13 +80,13 @@ describe ('Jira Event Manager', () => {
         });
     });
 
-    describe ('onActiveSprintsUpdated', () => {
+    /*describe ('onActiveSprintsUpdated', () => {
         it ('should call its handler when GH.WorkController.setPoolData is called', done => {
             Test.addJIRAfaEventEmitters ();
             Test.onActiveSprintsUpdated (done);
             GH.WorkController.setPoolData ();
         });
-    });
+    });*/
 
     describe ('onActiveViewChanged', () => {
         it ('should call its handler with pop state event as page url changes', done => {
