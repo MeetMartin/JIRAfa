@@ -29,7 +29,7 @@ const compactAndMoveExtraFieldsContent = issue =>
  * @return {JQuery} moveEpicAndVersion :: JQuery -> JQuery
  */
 const moveEpicAndVersion = issue =>
-    $$.toFound ('.ghx-end .aui-label') ($$.prependTo (findTheEndOfIssue (issue))) (issue);
+    $$.toFound ('.ghx-end .ghx-label') ($$.prependTo (findTheEndOfIssue (issue))) (issue);
 
 /**
  * Finds extra fields, appends them to a target element and compacts the issue
@@ -133,9 +133,10 @@ const compactBacklogIssues = () =>
     (issues =>
         issues.length > 0
             ?
-                log (issues.length + ' of issues was compacted in backlog.') &&
+                blockIssueDetail () &&
                 removeDetailViewDiv () &&
                 removeExtraItemsWithNoneValue (issues).each ((index, issue) => compactIssue ($ (issue))) &&
+                log (issues.length + ' of issues was compacted in backlog.') &&
                 issues
             :
                 issues
@@ -147,7 +148,6 @@ const compactBacklogIssues = () =>
  */
 const makeBacklogIssuesAlwaysCompact = () =>
     log ('Backlog issues will always be compact.') &&
-    blockIssueDetail () &&
     compactBacklogIssues () &&
     pipe (onBacklogDrawn, onBacklogUpdated) (compactBacklogIssues);
 
