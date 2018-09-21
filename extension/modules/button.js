@@ -91,7 +91,7 @@ const toggleMenu = (event, menuOptions) => {
  * @param {string} text text for the button
  * @returns {JQuery} the button
  */
-const createButton = text => $ (`<dd class="jirafa-button"><a role="button">${text}</a></dd>`);
+const createButton = text => $ (`<dd class="jirafa-button"><a role="button" class="aui-button aui-button-subtle">${text}</a></dd>`);
 
 /**
  * Creates JQuery object with a dropdown button with methods clearMenu and addMenuOption

@@ -25,17 +25,26 @@ const getAllEpics = () => {
 };
 
 /**
+ * Populates menu with names of epics.
+ * @param {JQuery} button
+ * @return {JQuery} populateMenu :: JQuery -> () -> JQuery
+ */
+const populateMenu = button => () => {
+    button.clearMenu ();
+    const uniqueEpics = getAllEpics ();
+    for (const epic of uniqueEpics) button.addMenuOption (epic, toggleEpicFiltering);
+    return button;
+};
+
+/**
  * Creates favorite epics button to quickly navigate to favorite epics
  * @returns {JQuery} jump to sprint button
  */
 const createEpicsButton = () => {
-    const button = createDropdown ('☆ Epics');
+    const button = createDropdown ('Epics');
     button.addMenuOption ('Loading...', () => null);
-    onBacklogUpdated (() => {
-        button.clearMenu ();
-        const uniqueEpics = getAllEpics ();
-        for (const epic of uniqueEpics) button.addMenuOption (epic, toggleEpicFiltering);
-    });
+    populateMenu (button) ();
+    onBacklogUpdated (populateMenu (button));
     return button;
 };
 
