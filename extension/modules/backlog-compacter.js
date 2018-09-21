@@ -1,7 +1,8 @@
-import {log} from '../utilities/logger.js';
+import {log, error} from '../utilities/logger.js';
 import {pipe} from '../utilities/functional-programming.js';
 import * as $$ from '../utilities/functional-jquery.js';
 import {onBacklogDrawn, onBacklogUpdated} from './event-manager.js';
+import {isBacklogCompacterCompatible} from '../utilities/compatibility.js';
 
 /**
  * Returns the end element of a single backlog issue
@@ -142,14 +143,21 @@ const compactBacklogIssues = () =>
                 issues
     ) (issuesToProcess ());
 
+const amICompatible = () =>  isBacklogCompacterCompatible () ? true : error ('Backlog compater is not compatible.') && false;
+
 /**
  * Makes backlog issues always compact
  * @return {compactBacklogIssues} makeBacklogIssuesAlwaysCompact :: () -> (a -> b)
  */
 const makeBacklogIssuesAlwaysCompact = () =>
-    log ('Backlog issues will always be compact.') &&
-    compactBacklogIssues () &&
-    pipe (onBacklogDrawn, onBacklogUpdated) (compactBacklogIssues);
+    amICompatible ()
+        ?
+            log ('Backlog issues will always be compact.') &&
+            compactBacklogIssues () &&
+            pipe (onBacklogDrawn, onBacklogUpdated) (compactBacklogIssues)
+        :
+            {}
+        ;
 
 export {
     makeBacklogIssuesAlwaysCompact

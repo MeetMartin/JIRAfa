@@ -1,4 +1,4 @@
-import {isGHAvailable} from '../utilities/compatibility.js';
+import {getActiveView} from './jira-views-manager.js';
 
 /**
  * Curry to trigger handler on event
@@ -13,23 +13,6 @@ const on = event => handler => document.addEventListener (event, handler) || han
  * @return {Boolean} trigger :: String -> String
  */
 const trigger = event => document.dispatchEvent (new Event (event)) && event;
-
-/**
- * Sets active view based on current url
- * @param {String} url url to be checked
- * @return {String} getActiveView :: String -> String
- */
-const getActiveView = url =>
-    url.includes ('rapidView')
-        ?
-            url.includes ('view=planning') ? 'Backlog' :
-            url.includes ('view=reporting') ? 'Reports' :
-            'Active Sprints'
-        :
-            url.includes ('browse') ? 'Open Issue' :
-            url.includes ('selectedItem=com.atlassian.jira.jira-projects-plugin:report-page') ? 'Report Page' :
-            url.includes ('projects') ? 'Projects' :
-            'Unknown';
 
 /**
  * Adds event emitter to popstate
@@ -174,7 +157,6 @@ export {
     addJIRAfaEventEmitters,
     onPopState,
     onActiveViewChanged,
-    getActiveView,
     onBacklogShown,
     onBacklogDrawn,
     onBacklogUpdated,

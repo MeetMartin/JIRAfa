@@ -1,7 +1,8 @@
 import {log} from '../utilities/logger.js';
 import {pipe, id} from '../utilities/functional-programming.js';
 import * as $$ from '../utilities/functional-jquery.js';
-import {onActiveViewChanged, getActiveView} from './event-manager.js';
+import {getActiveView} from './jira-views-manager.js';
+import {onActiveViewChanged} from './event-manager.js';
 import {createSprintsButton} from './sprints-button.js';
 import {createEpicsButton} from "./epics-button.js";
 

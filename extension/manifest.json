@@ -25,6 +25,7 @@
     "utilities/compatibility.js",
     "utilities/functional-programming.js",
     "utilities/functional-jquery.js",
+    "modules/jira-views-manager.js",
     "modules/event-manager.js",
     "modules/backlog-compacter.js",
     "modules/button.js",
