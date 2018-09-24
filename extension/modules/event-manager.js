@@ -29,16 +29,40 @@ const addEventEmitterToOnPopState =
 const onPopState = on ('jirafa-onpopstate');
 
 /**
+ * Adds event emitter to url change triggering event jirafa-url-changed
+ * @return {String} addEventEmitterToOnURLChanged :: () -> String
+ */
+const addEventEmitterToOnURLChanged = () => {
+    const event = 'jirafa-url-changed';
+    let oldURL = window.location.href;
+    setInterval (() => {
+        const currentURL = window.location.href;
+        if (oldURL !== currentURL) {
+            oldURL = currentURL;
+            trigger (event);
+        }
+    }, 1000);
+    return event;
+};
+
+/**
+ * Adds a handler function to the URL change
+ * @param {Function} handler function to handle the event
+ * @return {Function} onURLChanged :: (a -> b) -> (a -> b)
+ */
+const onURLChanged = on ('jirafa-url-changed');
+
+/**
  * Adds event emitter to JIRA on active view change triggering jirafa-active-view-changed
  * @return {String} addEvenEmitterToActiveViewChanged :: () -> String
  */
 const addEvenEmitterToActiveViewChanged = () => {
     let activeView = getActiveView (String (window.location));
     const event = 'jirafa-active-view-changed';
-    onPopState (() => {
-        const newState = getActiveView (String (window.location));
-        if (activeView !== newState) {
-            activeView = newState;
+    onURLChanged (() => {
+        const currentView = getActiveView (String (window.location));
+        if (activeView !== currentView) {
+            activeView = currentView;
             trigger (event);
         }
     });
@@ -146,6 +170,7 @@ const onBacklogUpdated = on ('jirafa-backlog-updated');
  */
 const addJIRAfaEventEmitters = () => [
     addEventEmitterToOnPopState (),
+    addEventEmitterToOnURLChanged (),
     addEvenEmitterToActiveViewChanged (),
     addEvenEmitterToBacklogShown (),
     addEvenEmitterToBacklogDrawn (),
@@ -156,6 +181,7 @@ const addJIRAfaEventEmitters = () => [
 export {
     addJIRAfaEventEmitters,
     onPopState,
+    onURLChanged,
     onActiveViewChanged,
     onBacklogShown,
     onBacklogDrawn,

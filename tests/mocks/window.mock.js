@@ -4,7 +4,7 @@
  */
 const getWindow = () => {
     return {
-        location: 'https://domain.tld/',
+        location: { href: 'https://domain.tld/' },
         onpopstate: () => null,
         Event: class {
             constructor (name) {

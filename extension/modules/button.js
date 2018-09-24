@@ -81,6 +81,7 @@ const toggleMenu = (event, menuOptions) => {
         $ (window).click (click => {
             // Dropdown menu should be removed if user click outside of it
             hideMenu ();
+            alert (window.onpopstate);
             $ (event.target).off (click);
         });
     }

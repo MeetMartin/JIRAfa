@@ -62,7 +62,8 @@ const activateButtonBanner = () =>
         addButton (['Backlog']) (createSprintsButton ()),
         addButton (['Backlog']) (createEpicsButton ())
     ) () &&
-    pipe (id, onActiveViewChanged) (updateButtonsBasedOnAgileView) &&
+    updateButtonsBasedOnAgileView () &&
+    onActiveViewChanged (updateButtonsBasedOnAgileView) &&
     log ('JIRAfa button banner added.');
 
 export {

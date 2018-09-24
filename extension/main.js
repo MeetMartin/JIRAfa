@@ -4,6 +4,7 @@ import {makeBacklogIssuesAlwaysCompact} from './modules/backlog-compacter.js';
 import {activateButtonBanner} from './modules/button-banner.js';
 import {
     addJIRAfaEventEmitters,
+    onURLChanged,
     onBacklogUpdated,
     onBacklogDrawn,
     onBacklogShown,
@@ -20,7 +21,8 @@ if (!isJIRACompatible ()) {
     const emitters = addJIRAfaEventEmitters ();
     log (`${emitters.length} emitters added.`);
 
-    onPopState (() => log ('URL changed.'));
+    onPopState (() => log ('POP state changed.'));
+    onURLChanged (() => log ('URL changed'));
     onActiveViewChanged (() => log ('Active view changed.'));
     onBacklogShown (() => log ('Backlog is shown.'));
     onBacklogDrawn (() => log ('Backlog is drawn.'));

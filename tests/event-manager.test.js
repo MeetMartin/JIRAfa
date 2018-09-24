@@ -25,9 +25,10 @@ describe ('Jira Event Manager', () => {
 
     describe ('addJIRAfaEventEmitters', () => {
         it ('returns array with 6 emitters', () => {
-            assert.deepStrictEqual (Test.addJIRAfaEventEmitters ().length, 5);
+            assert.deepStrictEqual (Test.addJIRAfaEventEmitters ().length, 6);
             assert.deepStrictEqual (Test.addJIRAfaEventEmitters (), [
                 'jirafa-onpopstate',
+                'jirafa-url-changed',
                 'jirafa-active-view-changed',
                 'jirafa-backlog-shown',
                 'jirafa-backlog-drawn',
@@ -38,9 +39,6 @@ describe ('Jira Event Manager', () => {
 
         it ('emitters should be activated', () => {
             Test.addJIRAfaEventEmitters ();
-            const onpopstate = global.document.eventListeners.get ('jirafa-onpopstate');
-            assert.deepStrictEqual (onpopstate.length, 1);
-            assert.deepStrictEqual (typeof onpopstate [0], 'function');
             assert.deepStrictEqual (GH.BacklogView.draw (), 'draw');
             assert.deepStrictEqual (GH.PlanController.show (), 'show');
             assert.deepStrictEqual (GH.PlanDragAndDrop.enableDragAndDrop (), 'enableDragAndDrop');
@@ -87,14 +85,5 @@ describe ('Jira Event Manager', () => {
             GH.WorkController.setPoolData ();
         });
     });*/
-
-    describe ('onActiveViewChanged', () => {
-        it ('should call its handler with pop state event as page url changes', done => {
-            Test.addJIRAfaEventEmitters ();
-            Test.onActiveViewChanged (done);
-            global.window.location = 'https://domain.tld/secure/RapidBoard.jspa?rapidView=1234&view=planning.nodetail';
-            global.window.onpopstate ();
-        });
-    });
     
 });
